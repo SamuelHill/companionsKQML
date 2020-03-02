@@ -23,3 +23,4 @@ The previous model is only convoluted because of the requirements Companions has
 * *socketTest.py* - old socket testing code, dead simple
 * *socketTest2.py* - old socket testing code, dead simple
 * *subscriptions.py* - subscription helper classes, incorporated later
+* *test_agent_old.py* - old version of the test agent

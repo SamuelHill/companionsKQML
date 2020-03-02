@@ -1,0 +1,587 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><title>Python: module companionsKQML.pythonian</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+</head><body bgcolor="#f0f0f8">
+
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="heading">
+<tr bgcolor="#7799ee">
+<td valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong><a href="companionsKQML.html"><font color="#ffffff">companionsKQML</font></a>.pythonian</strong></big></big></font></td
+><td align=right valign=bottom
+><font color="#ffffff" face="helvetica, arial"><a href=".">index</a><br><a href="file:c%3A%5Cqrg%5Ccompanions%5Cv1%5Cpythonian%5Ccompanionskqml%5Ccompanionskqml%5Cpythonian.py">c:\qrg\companions\v1\pythonian\companionskqml\companionskqml\pythonian.py</a></font></td></tr></table>
+    <p><tt><a href="#Pythonian">Pythonian</a>&nbsp;agent,&nbsp;sits&nbsp;on&nbsp;top&nbsp;of&nbsp;the&nbsp;modified&nbsp;KQMLModule&nbsp;-<br>
+<a href="companionsKQML.companionsKQMLModule.html#CompanionsKQMLModule">CompanionsKQMLModule</a>.&nbsp;Uses&nbsp;subscription&nbsp;management&nbsp;classes&nbsp;to&nbsp;allow&nbsp;for&nbsp;cleaner<br>
+subscription&nbsp;polling&nbsp;and&nbsp;updating.<br>
+&nbsp;<br>
+Attributes:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;LOGGER&nbsp;(logging):&nbsp;The&nbsp;logger&nbsp;(from&nbsp;logging)&nbsp;to&nbsp;handle&nbsp;debugging</tt></p>
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ee77aa">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Classes</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#ee77aa"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><dl>
+<dt><font face="helvetica, arial"><a href="builtins.html#dict">builtins.dict</a>(<a href="builtins.html#object">builtins.object</a>)
+</font></dt><dd>
+<dl>
+<dt><font face="helvetica, arial"><a href="companionsKQML.pythonian.html#SubscriptionManager">SubscriptionManager</a>
+</font></dt></dl>
+</dd>
+<dt><font face="helvetica, arial"><a href="builtins.html#object">builtins.object</a>
+</font></dt><dd>
+<dl>
+<dt><font face="helvetica, arial"><a href="companionsKQML.pythonian.html#Subscription">Subscription</a>
+</font></dt></dl>
+</dd>
+<dt><font face="helvetica, arial"><a href="companionsKQML.companionsKQMLModule.html#CompanionsKQMLModule">companionsKQML.companionsKQMLModule.CompanionsKQMLModule</a>(<a href="kqml.kqml_module.html#KQMLModule">kqml.kqml_module.KQMLModule</a>)
+</font></dt><dd>
+<dl>
+<dt><font face="helvetica, arial"><a href="companionsKQML.pythonian.html#Pythonian">Pythonian</a>
+</font></dt></dl>
+</dd>
+</dl>
+ <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="Pythonian">class <strong>Pythonian</strong></a>(<a href="companionsKQML.companionsKQMLModule.html#CompanionsKQMLModule">companionsKQML.companionsKQMLModule.CompanionsKQMLModule</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt>Outsourced&nbsp;predicate&nbsp;layer&nbsp;for&nbsp;Python,&nbsp;allows&nbsp;for&nbsp;easy&nbsp;creation&nbsp;of&nbsp;ask<br>
+queries,&nbsp;subscribable<br>
+&nbsp;<br>
+Attributes:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;achieves&nbsp;(<a href="builtins.html#dict">dict</a>):&nbsp;dictionary&nbsp;of&nbsp;functions&nbsp;to&nbsp;call&nbsp;on&nbsp;achieve&nbsp;of&nbsp;a&nbsp;given<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;name.&nbsp;Usually&nbsp;the&nbsp;function&nbsp;name&nbsp;is&nbsp;the&nbsp;name&nbsp;used&nbsp;in&nbsp;the&nbsp;achieve<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;queries&nbsp;but&nbsp;the&nbsp;name&nbsp;can&nbsp;be&nbsp;anything&nbsp;that&nbsp;you&nbsp;specify&nbsp;when&nbsp;adding<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;the&nbsp;achieve.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;asks&nbsp;(<a href="builtins.html#dict">dict</a>):&nbsp;dictionary&nbsp;of&nbsp;functions&nbsp;to&nbsp;call&nbsp;on&nbsp;ask&nbsp;of&nbsp;a&nbsp;given<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;name.&nbsp;Usually&nbsp;the&nbsp;function&nbsp;name&nbsp;is&nbsp;the&nbsp;name&nbsp;used&nbsp;in&nbsp;the&nbsp;ask<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;queries&nbsp;but&nbsp;the&nbsp;name&nbsp;can&nbsp;be&nbsp;anything&nbsp;that&nbsp;you&nbsp;specify&nbsp;when&nbsp;adding<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;the&nbsp;ask.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;name&nbsp;(str):&nbsp;This&nbsp;is&nbsp;the&nbsp;name&nbsp;your&nbsp;agent&nbsp;will&nbsp;register&nbsp;with<br>
+&nbsp;&nbsp;&nbsp;&nbsp;poller&nbsp;(Thread):&nbsp;thread&nbsp;that&nbsp;controls&nbsp;polling&nbsp;for&nbsp;updates&nbsp;to&nbsp;the<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;subscriptions&nbsp;and&nbsp;dispatches&nbsp;those&nbsp;updates&nbsp;accordingly<br>
+&nbsp;&nbsp;&nbsp;&nbsp;polling_interval&nbsp;(int):&nbsp;the&nbsp;interval&nbsp;at&nbsp;which&nbsp;the&nbsp;polling&nbsp;thread&nbsp;will<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;check&nbsp;for&nbsp;new&nbsp;data<br>
+&nbsp;&nbsp;&nbsp;&nbsp;subscriptions&nbsp;(<a href="#SubscriptionManager">SubscriptionManager</a>):&nbsp;customized&nbsp;dictionary&nbsp;of&nbsp;patterns<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;with&nbsp;the&nbsp;associated&nbsp;data&nbsp;and&nbsp;subscribers.<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%"><dl><dt>Method resolution order:</dt>
+<dd><a href="companionsKQML.pythonian.html#Pythonian">Pythonian</a></dd>
+<dd><a href="companionsKQML.companionsKQMLModule.html#CompanionsKQMLModule">companionsKQML.companionsKQMLModule.CompanionsKQMLModule</a></dd>
+<dd><a href="kqml.kqml_module.html#KQMLModule">kqml.kqml_module.KQMLModule</a></dd>
+<dd><a href="builtins.html#object">builtins.object</a></dd>
+</dl>
+<hr>
+Methods defined here:<br>
+<dl><dt><a name="Pythonian-__init__"><strong>__init__</strong></a>(self, **kwargs)</dt><dd><tt>Override&nbsp;of&nbsp;KQMLModule&nbsp;init&nbsp;to&nbsp;add&nbsp;turn&nbsp;it&nbsp;into&nbsp;a&nbsp;KQML&nbsp;socket&nbsp;server<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;host&nbsp;(str,&nbsp;optional):&nbsp;the&nbsp;host&nbsp;location&nbsp;to&nbsp;connect&nbsp;to&nbsp;via&nbsp;sockets<br>
+&nbsp;&nbsp;&nbsp;&nbsp;port&nbsp;(int,&nbsp;optional):&nbsp;the&nbsp;port&nbsp;on&nbsp;the&nbsp;host&nbsp;to&nbsp;connect&nbsp;to<br>
+&nbsp;&nbsp;&nbsp;&nbsp;listener_port&nbsp;(int,&nbsp;optional):&nbsp;the&nbsp;port&nbsp;this&nbsp;class&nbsp;will&nbsp;host&nbsp;its<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;KQML&nbsp;socket&nbsp;server&nbsp;from&nbsp;(the&nbsp;connection&nbsp;end&nbsp;that&nbsp;dispatches<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;requests&nbsp;as&nbsp;needed)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;debug&nbsp;(bool,&nbsp;optional):&nbsp;Whether&nbsp;to&nbsp;set&nbsp;the&nbsp;level&nbsp;of&nbsp;the&nbsp;logger&nbsp;to<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DEBUG&nbsp;or&nbsp;INFO&nbsp;-&nbsp;silencing&nbsp;debug&nbsp;errors&nbsp;and&nbsp;only&nbsp;showing&nbsp;needed<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;information.</tt></dd></dl>
+
+<dl><dt><a name="Pythonian-achieve_on_agent"><strong>achieve_on_agent</strong></a>(self, receiver:str, data:Any)</dt><dd><tt>Sends&nbsp;a&nbsp;KQML&nbsp;achieve&nbsp;to&nbsp;the&nbsp;receiver&nbsp;with&nbsp;the&nbsp;data&nbsp;input&nbsp;as&nbsp;a&nbsp;list.<br>
+&nbsp;<br>
+Arguments:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;receiver&nbsp;(str):&nbsp;name&nbsp;of&nbsp;the&nbsp;receiving&nbsp;agent<br>
+&nbsp;&nbsp;&nbsp;&nbsp;data&nbsp;(Any):&nbsp;content&nbsp;to&nbsp;send&nbsp;along&nbsp;with&nbsp;achieve</tt></dd></dl>
+
+<dl><dt><a name="Pythonian-add_achieve"><strong>add_achieve</strong></a>(self, func:Callable[..., Any], name:str=None)</dt><dd><tt>Adds&nbsp;the&nbsp;given&nbsp;function&nbsp;(func)&nbsp;to&nbsp;the&nbsp;dictionary&nbsp;of&nbsp;achieves&nbsp;under<br>
+the&nbsp;key&nbsp;of&nbsp;the&nbsp;given&nbsp;name.&nbsp;If&nbsp;no&nbsp;name&nbsp;is&nbsp;given&nbsp;(which&nbsp;is&nbsp;the&nbsp;default)<br>
+the&nbsp;function&nbsp;name&nbsp;is&nbsp;used.<br>
+&nbsp;<br>
+Arguments:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;func&nbsp;(Callable[...,&nbsp;Any]):&nbsp;function&nbsp;to&nbsp;call&nbsp;on&nbsp;achieve&nbsp;of&nbsp;this<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;function&nbsp;(with&nbsp;given&nbsp;name&nbsp;or&nbsp;-&nbsp;if&nbsp;not&nbsp;given&nbsp;-&nbsp;function&nbsp;name)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;name&nbsp;(str,&nbsp;optional):&nbsp;name&nbsp;of&nbsp;function&nbsp;to&nbsp;look&nbsp;for&nbsp;on&nbsp;achieve,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;defaults&nbsp;to&nbsp;function.__name__&nbsp;(key&nbsp;in&nbsp;achieves&nbsp;dictionary)</tt></dd></dl>
+
+<dl><dt><a name="Pythonian-add_ask"><strong>add_ask</strong></a>(self, func:Callable[..., Any], name:str=None)</dt><dd><tt>Adds&nbsp;the&nbsp;given&nbsp;function&nbsp;(func)&nbsp;to&nbsp;the&nbsp;dictionary&nbsp;of&nbsp;asks&nbsp;under&nbsp;the<br>
+key&nbsp;of&nbsp;the&nbsp;given&nbsp;name.&nbsp;If&nbsp;subscribable&nbsp;is&nbsp;true&nbsp;then&nbsp;we&nbsp;also&nbsp;add&nbsp;the<br>
+pattern&nbsp;to&nbsp;our&nbsp;subscription&nbsp;dictionary&nbsp;and&nbsp;advertise&nbsp;it.<br>
+&nbsp;<br>
+Arguments:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;func&nbsp;(Callable[...,&nbsp;Any]):&nbsp;function&nbsp;to&nbsp;be&nbsp;called&nbsp;on&nbsp;ask&nbsp;query<br>
+&nbsp;&nbsp;&nbsp;&nbsp;name&nbsp;(str,&nbsp;optional):&nbsp;name&nbsp;to&nbsp;pair&nbsp;to&nbsp;this&nbsp;function&nbsp;for&nbsp;query&nbsp;calls<br>
+&nbsp;<br>
+Raises:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;ValueError:&nbsp;func&nbsp;must&nbsp;be&nbsp;a&nbsp;callable&nbsp;function</tt></dd></dl>
+
+<dl><dt><a name="Pythonian-add_subscription"><strong>add_subscription</strong></a>(self, pattern:str)</dt><dd><tt>Parses&nbsp;pattern&nbsp;for&nbsp;a&nbsp;function&nbsp;and&nbsp;(unless&nbsp;one&nbsp;is&nbsp;given)&nbsp;uses&nbsp;that<br>
+as&nbsp;the&nbsp;underlying&nbsp;ask&nbsp;function&nbsp;(stored&nbsp;by&nbsp;add_ask).&nbsp;Advertises&nbsp;the<br>
+pattern&nbsp;as&nbsp;subscribable.<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pattern&nbsp;(str):&nbsp;pattern&nbsp;to&nbsp;send&nbsp;a&nbsp;subscription&nbsp;out&nbsp;on<br>
+&nbsp;<br>
+Raises:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;TypeError:&nbsp;pattern&nbsp;must&nbsp;be&nbsp;of&nbsp;type&nbsp;string<br>
+&nbsp;&nbsp;&nbsp;&nbsp;ValueError:&nbsp;pattern&nbsp;must&nbsp;have&nbsp;at&nbsp;least&nbsp;one&nbsp;predicate&nbsp;in&nbsp;it&nbsp;and&nbsp;be<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;surrounded&nbsp;by&nbsp;parentheses</tt></dd></dl>
+
+<dl><dt><a name="Pythonian-advertise"><strong>advertise</strong></a>(self, pattern:str)</dt><dd><tt>Sends&nbsp;an&nbsp;advertise&nbsp;message&nbsp;for&nbsp;an&nbsp;ask-all&nbsp;command&nbsp;with&nbsp;the&nbsp;content<br>
+set&nbsp;to&nbsp;the&nbsp;input&nbsp;pattern<br>
+&nbsp;<br>
+Arguments:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pattern&nbsp;(str):&nbsp;content&nbsp;to&nbsp;be&nbsp;advertised&nbsp;as&nbsp;an&nbsp;ask-all</tt></dd></dl>
+
+<dl><dt><a name="Pythonian-advertise_subscribe"><strong>advertise_subscribe</strong></a>(self, pattern:str)</dt><dd><tt>Sends&nbsp;an&nbsp;advertise&nbsp;message&nbsp;for&nbsp;an&nbsp;subscribe&nbsp;to&nbsp;an&nbsp;ask-all&nbsp;command<br>
+with&nbsp;the&nbsp;content&nbsp;set&nbsp;to&nbsp;the&nbsp;input&nbsp;pattern<br>
+&nbsp;<br>
+Arguments:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pattern&nbsp;(str):&nbsp;content&nbsp;to&nbsp;be&nbsp;advertised&nbsp;as&nbsp;a&nbsp;subscription&nbsp;to&nbsp;an<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ask-all</tt></dd></dl>
+
+<dl><dt><a name="Pythonian-insert_data"><strong>insert_data</strong></a>(self, receiver:str, data:Any, wm_only:bool=False)</dt><dd><tt>Takes&nbsp;the&nbsp;data&nbsp;input&nbsp;by&nbsp;the&nbsp;user&nbsp;and&nbsp;processes&nbsp;it&nbsp;into&nbsp;an&nbsp;insert<br>
+message&nbsp;which&nbsp;is&nbsp;subsequently&nbsp;sent&nbsp;off&nbsp;to&nbsp;Companions.<br>
+&nbsp;<br>
+Arguments:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;receiver&nbsp;(str):&nbsp;name&nbsp;of&nbsp;the&nbsp;receiver&nbsp;(agent&nbsp;with&nbsp;a&nbsp;kb&nbsp;to&nbsp;insert&nbsp;to)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;data&nbsp;(Any):&nbsp;fact&nbsp;to&nbsp;insert&nbsp;(data&nbsp;to&nbsp;be&nbsp;listify'd)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;wm_only&nbsp;(bool,&nbsp;optional):&nbsp;whether&nbsp;or&nbsp;not&nbsp;this&nbsp;should&nbsp;only&nbsp;be<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;inserted&nbsp;into&nbsp;the&nbsp;working&nbsp;memory&nbsp;(default:&nbsp;False)</tt></dd></dl>
+
+<dl><dt><a name="Pythonian-insert_microtheory"><strong>insert_microtheory</strong></a>(self, receiver:str, data_list:list, mt_name:str, wm_only:bool=False)</dt><dd><tt>Inserts&nbsp;a&nbsp;list&nbsp;of&nbsp;facts&nbsp;into&nbsp;the&nbsp;given&nbsp;microtheory<br>
+&nbsp;<br>
+Arguments:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;receiver&nbsp;(str):&nbsp;name&nbsp;of&nbsp;the&nbsp;receiver&nbsp;(agent&nbsp;with&nbsp;a&nbsp;kb&nbsp;to&nbsp;insert&nbsp;to)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;data_list&nbsp;(list):&nbsp;list&nbsp;of&nbsp;facts&nbsp;to&nbsp;insert&nbsp;(list&nbsp;with&nbsp;each&nbsp;elemenet<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;having&nbsp;data&nbsp;to&nbsp;be&nbsp;listify'd)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;mt_name&nbsp;(str):&nbsp;microtheory&nbsp;name<br>
+&nbsp;&nbsp;&nbsp;&nbsp;wm_only&nbsp;(bool,&nbsp;optional):&nbsp;whether&nbsp;or&nbsp;not&nbsp;this&nbsp;should&nbsp;only&nbsp;be<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;inserted&nbsp;into&nbsp;the&nbsp;working&nbsp;memory&nbsp;(default:&nbsp;False)</tt></dd></dl>
+
+<dl><dt><a name="Pythonian-insert_to_microtheory"><strong>insert_to_microtheory</strong></a>(self, receiver:str, data:Any, mt_name:str, wm_only:bool=False)</dt><dd><tt>Inserts&nbsp;a&nbsp;fact&nbsp;into&nbsp;the&nbsp;given&nbsp;microtheory&nbsp;using&nbsp;ist-Information<br>
+&nbsp;<br>
+Arguments:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;receiver&nbsp;(str):&nbsp;name&nbsp;of&nbsp;the&nbsp;receiver&nbsp;(agent&nbsp;with&nbsp;a&nbsp;kb&nbsp;to&nbsp;insert&nbsp;to)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;data&nbsp;(Any):&nbsp;fact&nbsp;to&nbsp;insert<br>
+&nbsp;&nbsp;&nbsp;&nbsp;mt_name&nbsp;(str):&nbsp;microtheory&nbsp;name<br>
+&nbsp;&nbsp;&nbsp;&nbsp;wm_only&nbsp;(bool,&nbsp;optional):&nbsp;whether&nbsp;or&nbsp;not&nbsp;this&nbsp;should&nbsp;only&nbsp;be<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;inserted&nbsp;into&nbsp;the&nbsp;working&nbsp;memory&nbsp;(default:&nbsp;False)</tt></dd></dl>
+
+<dl><dt><a name="Pythonian-receive_achieve"><strong>receive_achieve</strong></a>(self, msg:kqml.kqml_performative.KQMLPerformative, content:kqml.kqml_list.KQMLList)</dt><dd><tt>Overrides&nbsp;the&nbsp;default&nbsp;KQMLModule&nbsp;receive&nbsp;for&nbsp;achieves&nbsp;and&nbsp;instead<br>
+does&nbsp;basic&nbsp;error&nbsp;checking&nbsp;before&nbsp;attempting&nbsp;the&nbsp;action&nbsp;by&nbsp;calling&nbsp;the<br>
+proper&nbsp;ask&nbsp;function&nbsp;with&nbsp;the&nbsp;arguments&nbsp;passed&nbsp;along&nbsp;as&nbsp;inputs.<br>
+&nbsp;<br>
+Arguments:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;msg&nbsp;(KQMLPerformative):&nbsp;predicate/&nbsp;signifier&nbsp;of&nbsp;task&nbsp;(message<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;sent&nbsp;to&nbsp;python&nbsp;from&nbsp;companions)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;content&nbsp;(KQMLList):&nbsp;action&nbsp;task&nbsp;is&nbsp;referring&nbsp;to&nbsp;(content&nbsp;of<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;message)<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;None:&nbsp;returns&nbsp;only&nbsp;to&nbsp;exit&nbsp;function&nbsp;early&nbsp;if&nbsp;conditions&nbsp;aren't&nbsp;met</tt></dd></dl>
+
+<dl><dt><a name="Pythonian-receive_ask_one"><strong>receive_ask_one</strong></a>(self, msg:kqml.kqml_performative.KQMLPerformative, content:kqml.kqml_list.KQMLList)</dt><dd><tt>Override&nbsp;of&nbsp;default&nbsp;ask&nbsp;one,&nbsp;creates&nbsp;Companions&nbsp;style&nbsp;responses.<br>
+Gets&nbsp;the&nbsp;arguments&nbsp;bindings&nbsp;from&nbsp;the&nbsp;cdr&nbsp;of&nbsp;the&nbsp;content.&nbsp;The&nbsp;predicate<br>
+(car)&nbsp;is&nbsp;then&nbsp;used&nbsp;to&nbsp;find&nbsp;the&nbsp;function&nbsp;bound&nbsp;to&nbsp;the&nbsp;ask&nbsp;predicate,&nbsp;and<br>
+that&nbsp;function&nbsp;is&nbsp;called&nbsp;with&nbsp;the&nbsp;bounded&nbsp;argument&nbsp;list&nbsp;unpacked&nbsp;into<br>
+it's&nbsp;own&nbsp;inputs.&nbsp;The&nbsp;resulting&nbsp;query&nbsp;is&nbsp;then&nbsp;passed&nbsp;along&nbsp;to&nbsp;the<br>
+_response_to_query&nbsp;helper&nbsp;which&nbsp;will&nbsp;properly&nbsp;respond&nbsp;to&nbsp;patterns&nbsp;or<br>
+bindings&nbsp;based&nbsp;on&nbsp;out&nbsp;response&nbsp;type.<br>
+&nbsp;<br>
+Arguments:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;msg&nbsp;(KQMLPerformative):&nbsp;reply&nbsp;mechanism<br>
+&nbsp;&nbsp;&nbsp;&nbsp;content&nbsp;(KQMLList):&nbsp;predicate&nbsp;to&nbsp;look&nbsp;up&nbsp;in&nbsp;asks&nbsp;<a href="builtins.html#dict">dict</a>,&nbsp;arguments&nbsp;of<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;the&nbsp;ask&nbsp;call&nbsp;-&nbsp;to&nbsp;be&nbsp;passed&nbsp;in&nbsp;to&nbsp;the&nbsp;call.<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;None:&nbsp;returns&nbsp;only&nbsp;to&nbsp;exit&nbsp;function&nbsp;early&nbsp;if&nbsp;conditions&nbsp;aren't&nbsp;met</tt></dd></dl>
+
+<dl><dt><a name="Pythonian-receive_subscribe"><strong>receive_subscribe</strong></a>(self, msg:kqml.kqml_performative.KQMLPerformative, content:kqml.kqml_list.KQMLList)</dt><dd><tt>Override&nbsp;of&nbsp;KQMLModule&nbsp;default,&nbsp;expects&nbsp;a&nbsp;performative&nbsp;of&nbsp;ask-all.<br>
+Gets&nbsp;the&nbsp;ask-all&nbsp;query&nbsp;from&nbsp;the&nbsp;message&nbsp;contents,&nbsp;then&nbsp;checks<br>
+to&nbsp;see&nbsp;if&nbsp;the&nbsp;query&nbsp;head&nbsp;is&nbsp;in&nbsp;the&nbsp;dictionary&nbsp;of&nbsp;available&nbsp;asks&nbsp;and<br>
+checks&nbsp;if&nbsp;the&nbsp;query&nbsp;string&nbsp;is&nbsp;in&nbsp;the&nbsp;dictionary&nbsp;of&nbsp;subscribers.&nbsp;If&nbsp;both<br>
+of&nbsp;these&nbsp;are&nbsp;true&nbsp;we&nbsp;then&nbsp;append&nbsp;the&nbsp;message&nbsp;to&nbsp;the&nbsp;subscriber&nbsp;query,<br>
+clean&nbsp;out&nbsp;any&nbsp;previous&nbsp;subscription&nbsp;data,&nbsp;and&nbsp;reply&nbsp;with&nbsp;a&nbsp;tell&nbsp;ok<br>
+message.<br>
+&nbsp;<br>
+Arguments:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;msg&nbsp;(KQMLPerformative):&nbsp;performative&nbsp;to&nbsp;be&nbsp;passed&nbsp;along&nbsp;to&nbsp;reply<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;and&nbsp;stored&nbsp;in&nbsp;the&nbsp;subscribers&nbsp;dictionary&nbsp;(for&nbsp;future&nbsp;replies)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;content&nbsp;(KQMLList):&nbsp;ask-all&nbsp;for&nbsp;a&nbsp;query<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;None:&nbsp;returns&nbsp;only&nbsp;to&nbsp;exit&nbsp;function&nbsp;early&nbsp;if&nbsp;conditions&nbsp;aren't&nbsp;met</tt></dd></dl>
+
+<dl><dt><a name="Pythonian-receive_tell"><strong>receive_tell</strong></a>(self, msg:kqml.kqml_performative.KQMLPerformative, content:kqml.kqml_list.KQMLList)</dt><dd><tt>Override&nbsp;default&nbsp;KQMLModule&nbsp;tell&nbsp;to&nbsp;simply&nbsp;log&nbsp;the&nbsp;content&nbsp;and&nbsp;reply<br>
+with&nbsp;nothing<br>
+&nbsp;<br>
+Arguments:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;msg&nbsp;(KQMLPerformative):&nbsp;overall&nbsp;message&nbsp;to&nbsp;be&nbsp;passed&nbsp;along&nbsp;in&nbsp;reply<br>
+&nbsp;&nbsp;&nbsp;&nbsp;content&nbsp;(KQMLList):&nbsp;tell&nbsp;content&nbsp;from&nbsp;companions&nbsp;to&nbsp;be&nbsp;logged</tt></dd></dl>
+
+<dl><dt><a name="Pythonian-update_subscription"><strong>update_subscription</strong></a>(self, pattern:str, *args:Any)</dt><dd><tt>Looks&nbsp;to&nbsp;see&nbsp;if&nbsp;the&nbsp;arguments&nbsp;to&nbsp;pattern&nbsp;have&nbsp;changes&nbsp;since&nbsp;last<br>
+time,&nbsp;if&nbsp;so&nbsp;it&nbsp;will&nbsp;update&nbsp;those&nbsp;arguments&nbsp;in&nbsp;the&nbsp;subscription&nbsp;manager.<br>
+&nbsp;<br>
+Arguments:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pattern&nbsp;(str):&nbsp;string&nbsp;representing&nbsp;the&nbsp;pattern&nbsp;(id&nbsp;of&nbsp;subscription)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;*args&nbsp;(Any):&nbsp;data&nbsp;associated&nbsp;with&nbsp;the&nbsp;pattern&nbsp;(either&nbsp;to&nbsp;be&nbsp;bound<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;or,&nbsp;by&nbsp;default&nbsp;used&nbsp;in&nbsp;a&nbsp;substitution&nbsp;pattern).&nbsp;For&nbsp;conveneince<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;you&nbsp;can&nbsp;enter&nbsp;each&nbsp;variable&nbsp;to&nbsp;be&nbsp;bound&nbsp;as&nbsp;a&nbsp;positional<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;argument&nbsp;and&nbsp;this&nbsp;will&nbsp;gather&nbsp;them&nbsp;up.</tt></dd></dl>
+
+<hr>
+Data and other attributes defined here:<br>
+<dl><dt><strong>name</strong> = 'Pythonian'</dl>
+
+<hr>
+Methods inherited from <a href="companionsKQML.companionsKQMLModule.html#CompanionsKQMLModule">companionsKQML.companionsKQMLModule.CompanionsKQMLModule</a>:<br>
+<dl><dt><a name="Pythonian-connect"><strong>connect</strong></a>(self)</dt><dd><tt>Rewrite&nbsp;of&nbsp;KQMLModule&nbsp;connect,&nbsp;only&nbsp;handles&nbsp;send_socket&nbsp;and&nbsp;output<br>
+connections</tt></dd></dl>
+
+<dl><dt><a name="Pythonian-connect1"><strong>connect1</strong></a>(self)</dt></dl>
+
+<dl><dt><a name="Pythonian-exit"><strong>exit</strong></a>(self, n:int=0)</dt><dd><tt>Override&nbsp;of&nbsp;KQMLModule;&nbsp;Closes&nbsp;this&nbsp;agent,&nbsp;shuts&nbsp;down&nbsp;the&nbsp;threaded<br>
+execution&nbsp;loop,&nbsp;the&nbsp;dispatcher&nbsp;and&nbsp;the&nbsp;relevant&nbsp;sockets.<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;n&nbsp;(int,&nbsp;optional):&nbsp;the&nbsp;value&nbsp;to&nbsp;pass&nbsp;along&nbsp;to&nbsp;sys.exit</tt></dd></dl>
+
+<dl><dt><a name="Pythonian-receive_eof"><strong>receive_eof</strong></a>(self)</dt><dd><tt>Override&nbsp;of&nbsp;KQMLModule,&nbsp;shuts&nbsp;down&nbsp;the&nbsp;dispatcher&nbsp;after&nbsp;receiving<br>
+the&nbsp;end&nbsp;of&nbsp;file&nbsp;(eof)&nbsp;signal.&nbsp;This&nbsp;happens&nbsp;after&nbsp;every&nbsp;message...</tt></dd></dl>
+
+<dl><dt><a name="Pythonian-receive_other_performative"><strong>receive_other_performative</strong></a>(self, msg:kqml.kqml_performative.KQMLPerformative)</dt><dd><tt>Override&nbsp;of&nbsp;KQMLModule&nbsp;default...&nbsp;ping&nbsp;isn't&nbsp;currently&nbsp;supported&nbsp;by<br>
+pykqml&nbsp;so&nbsp;we&nbsp;handle&nbsp;other&nbsp;to&nbsp;catch&nbsp;ping&nbsp;and&nbsp;otherwise&nbsp;throw&nbsp;an&nbsp;error.<br>
+&nbsp;<br>
+Arguments:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;msg&nbsp;(KQMLPerformative):&nbsp;other&nbsp;type&nbsp;of&nbsp;performative,&nbsp;if&nbsp;ping&nbsp;we<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;reply&nbsp;with&nbsp;a&nbsp;ping&nbsp;update&nbsp;otherwise&nbsp;error</tt></dd></dl>
+
+<dl><dt><a name="Pythonian-register"><strong>register</strong></a>(self)</dt><dd><tt>Override&nbsp;of&nbsp;KQMLModule,&nbsp;registers&nbsp;this&nbsp;agent&nbsp;with&nbsp;Companions</tt></dd></dl>
+
+<dl><dt><a name="Pythonian-reply_on_local_port"><strong>reply_on_local_port</strong></a>(self, msg:kqml.kqml_performative.KQMLPerformative, reply_msg:kqml.kqml_performative.KQMLPerformative)</dt><dd><tt>Replies&nbsp;to&nbsp;a&nbsp;message&nbsp;on&nbsp;the&nbsp;local&nbsp;port&nbsp;(listener&nbsp;port)<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;msg&nbsp;(KQMLPerformative):&nbsp;message&nbsp;to&nbsp;reply&nbsp;to<br>
+&nbsp;&nbsp;&nbsp;&nbsp;reply_msg&nbsp;(KQMLPerformative):&nbsp;message&nbsp;to&nbsp;reply&nbsp;with</tt></dd></dl>
+
+<dl><dt><a name="Pythonian-send"><strong>send</strong></a>(self, msg:kqml.kqml_performative.KQMLPerformative)</dt><dd><tt>Override&nbsp;of&nbsp;send&nbsp;from&nbsp;KQMLModule,&nbsp;opens&nbsp;and&nbsp;closes&nbsp;socket&nbsp;around<br>
+send&nbsp;for&nbsp;proper&nbsp;signaling&nbsp;to&nbsp;Companions<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;msg&nbsp;(KQMLPerformative):&nbsp;message&nbsp;that&nbsp;you&nbsp;are&nbsp;sending&nbsp;to&nbsp;Companions</tt></dd></dl>
+
+<dl><dt><a name="Pythonian-send_on_local_port"><strong>send_on_local_port</strong></a>(self, msg:kqml.kqml_performative.KQMLPerformative)</dt><dd><tt>Sends&nbsp;a&nbsp;message&nbsp;on&nbsp;the&nbsp;local_out,&nbsp;i.e.&nbsp;sends&nbsp;a&nbsp;message&nbsp;on&nbsp;the<br>
+listener_port.&nbsp;This&nbsp;is&nbsp;used&nbsp;for&nbsp;some&nbsp;specific&nbsp;functions&nbsp;that&nbsp;are&nbsp;not<br>
+meant&nbsp;to&nbsp;be&nbsp;handled&nbsp;as&nbsp;a&nbsp;kqml&nbsp;performative.<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;msg&nbsp;(KQMLPerformative):&nbsp;message&nbsp;to&nbsp;be&nbsp;sent</tt></dd></dl>
+
+<dl><dt><a name="Pythonian-start"><strong>start</strong></a>(self)</dt></dl>
+
+<hr>
+Class methods inherited from <a href="companionsKQML.companionsKQMLModule.html#CompanionsKQMLModule">companionsKQML.companionsKQMLModule.CompanionsKQMLModule</a>:<br>
+<dl><dt><a name="Pythonian-parse_command_line_args"><strong>parse_command_line_args</strong></a>(argv:list=None)<font color="#909090"><font face="helvetica, arial"> from <a href="builtins.html#type">builtins.type</a></font></font></dt><dd><tt>Uses&nbsp;ArgumentParser&nbsp;to&nbsp;parse&nbsp;the&nbsp;args&nbsp;that&nbsp;this&nbsp;is&nbsp;called&nbsp;with.<br>
+Additional&nbsp;benefit&nbsp;of&nbsp;searching&nbsp;your&nbsp;system&nbsp;for&nbsp;a&nbsp;running&nbsp;Companion<br>
+(given&nbsp;a&nbsp;number&nbsp;of&nbsp;assumptions:&nbsp;qrg&nbsp;installed&nbsp;on&nbsp;the&nbsp;root&nbsp;of&nbsp;some&nbsp;drive<br>
+on&nbsp;the&nbsp;system&nbsp;or&nbsp;the&nbsp;home&nbsp;directory,&nbsp;CompanionsMicroServer64&nbsp;before<br>
+CompanionsServer64,&nbsp;allegro&nbsp;for&nbsp;local&nbsp;dev,&nbsp;find&nbsp;running&nbsp;exe&nbsp;first&nbsp;then<br>
+find&nbsp;local&nbsp;dev,&nbsp;etc.)&nbsp;if&nbsp;no&nbsp;port&nbsp;is&nbsp;specified.&nbsp;If&nbsp;no&nbsp;running&nbsp;companion<br>
+is&nbsp;found,&nbsp;uses&nbsp;default&nbsp;values.&nbsp;The&nbsp;url&nbsp;-&nbsp;host,&nbsp;listener_port,&nbsp;and&nbsp;debug<br>
+arguments&nbsp;all&nbsp;also&nbsp;fall&nbsp;back&nbsp;to&nbsp;defaults.&nbsp;The&nbsp;additional&nbsp;argument&nbsp;-v<br>
+for&nbsp;verify_pids&nbsp;will&nbsp;assert&nbsp;that&nbsp;the&nbsp;pid's&nbsp;match&nbsp;between&nbsp;what&nbsp;is&nbsp;found<br>
+on&nbsp;the&nbsp;system&nbsp;and&nbsp;what&nbsp;is&nbsp;put&nbsp;in&nbsp;the&nbsp;file.<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;cls:&nbsp;instantiated&nbsp;cls&nbsp;<a href="builtins.html#object">object</a><br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;argv&nbsp;(list,&nbsp;optional):&nbsp;argument&nbsp;list&nbsp;(typically&nbsp;from&nbsp;sys.argv)</tt></dd></dl>
+
+<hr>
+Methods inherited from <a href="kqml.kqml_module.html#KQMLModule">kqml.kqml_module.KQMLModule</a>:<br>
+<dl><dt><a name="Pythonian-error_reply"><strong>error_reply</strong></a>(self, msg, comment)</dt></dl>
+
+<dl><dt><a name="Pythonian-handle_exception"><strong>handle_exception</strong></a>(self, ex)</dt></dl>
+
+<dl><dt><a name="Pythonian-ready"><strong>ready</strong></a>(self)</dt></dl>
+
+<dl><dt><a name="Pythonian-receive_advertise"><strong>receive_advertise</strong></a>(self, msg, content)</dt></dl>
+
+<dl><dt><a name="Pythonian-receive_ask_all"><strong>receive_ask_all</strong></a>(self, msg, content)</dt></dl>
+
+<dl><dt><a name="Pythonian-receive_ask_if"><strong>receive_ask_if</strong></a>(self, msg, content)</dt></dl>
+
+<dl><dt><a name="Pythonian-receive_broadcast"><strong>receive_broadcast</strong></a>(self, msg, content)</dt></dl>
+
+<dl><dt><a name="Pythonian-receive_broker_all"><strong>receive_broker_all</strong></a>(self, msg, content)</dt></dl>
+
+<dl><dt><a name="Pythonian-receive_broker_one"><strong>receive_broker_one</strong></a>(self, msg, content)</dt></dl>
+
+<dl><dt><a name="Pythonian-receive_delete_all"><strong>receive_delete_all</strong></a>(self, msg, content)</dt></dl>
+
+<dl><dt><a name="Pythonian-receive_delete_one"><strong>receive_delete_one</strong></a>(self, msg, content)</dt></dl>
+
+<dl><dt><a name="Pythonian-receive_deny"><strong>receive_deny</strong></a>(self, msg, content)</dt></dl>
+
+<dl><dt><a name="Pythonian-receive_discard"><strong>receive_discard</strong></a>(self, msg)</dt></dl>
+
+<dl><dt><a name="Pythonian-receive_eos"><strong>receive_eos</strong></a>(self, msg)</dt></dl>
+
+<dl><dt><a name="Pythonian-receive_error"><strong>receive_error</strong></a>(self, msg)</dt></dl>
+
+<dl><dt><a name="Pythonian-receive_forward"><strong>receive_forward</strong></a>(self, msg, content)</dt></dl>
+
+<dl><dt><a name="Pythonian-receive_insert"><strong>receive_insert</strong></a>(self, msg, content)</dt></dl>
+
+<dl><dt><a name="Pythonian-receive_message_missing_content"><strong>receive_message_missing_content</strong></a>(self, msg)</dt></dl>
+
+<dl><dt><a name="Pythonian-receive_message_missing_verb"><strong>receive_message_missing_verb</strong></a>(self, msg)</dt></dl>
+
+<dl><dt><a name="Pythonian-receive_next"><strong>receive_next</strong></a>(self, msg)</dt></dl>
+
+<dl><dt><a name="Pythonian-receive_ready"><strong>receive_ready</strong></a>(self, msg)</dt></dl>
+
+<dl><dt><a name="Pythonian-receive_recommend_all"><strong>receive_recommend_all</strong></a>(self, msg, content)</dt></dl>
+
+<dl><dt><a name="Pythonian-receive_recommend_one"><strong>receive_recommend_one</strong></a>(self, msg, content)</dt></dl>
+
+<dl><dt><a name="Pythonian-receive_recruit_all"><strong>receive_recruit_all</strong></a>(self, msg, content)</dt></dl>
+
+<dl><dt><a name="Pythonian-receive_recruit_one"><strong>receive_recruit_one</strong></a>(self, msg, content)</dt></dl>
+
+<dl><dt><a name="Pythonian-receive_register"><strong>receive_register</strong></a>(self, msg, content)</dt></dl>
+
+<dl><dt><a name="Pythonian-receive_reply"><strong>receive_reply</strong></a>(self, msg, content)</dt></dl>
+
+<dl><dt><a name="Pythonian-receive_request"><strong>receive_request</strong></a>(self, msg, content)</dt></dl>
+
+<dl><dt><a name="Pythonian-receive_rest"><strong>receive_rest</strong></a>(self, msg)</dt></dl>
+
+<dl><dt><a name="Pythonian-receive_sorry"><strong>receive_sorry</strong></a>(self, msg)</dt></dl>
+
+<dl><dt><a name="Pythonian-receive_standby"><strong>receive_standby</strong></a>(self, msg, content)</dt></dl>
+
+<dl><dt><a name="Pythonian-receive_stream_all"><strong>receive_stream_all</strong></a>(self, msg, content)</dt></dl>
+
+<dl><dt><a name="Pythonian-receive_transport_address"><strong>receive_transport_address</strong></a>(self, msg, content)</dt></dl>
+
+<dl><dt><a name="Pythonian-receive_unadvertise"><strong>receive_unadvertise</strong></a>(self, msg, content)</dt></dl>
+
+<dl><dt><a name="Pythonian-receive_undelete"><strong>receive_undelete</strong></a>(self, msg, content)</dt></dl>
+
+<dl><dt><a name="Pythonian-receive_uninsert"><strong>receive_uninsert</strong></a>(self, msg, content)</dt></dl>
+
+<dl><dt><a name="Pythonian-receive_unregister"><strong>receive_unregister</strong></a>(self, msg)</dt></dl>
+
+<dl><dt><a name="Pythonian-receive_untell"><strong>receive_untell</strong></a>(self, msg, content)</dt></dl>
+
+<dl><dt><a name="Pythonian-reply"><strong>reply</strong></a>(self, msg, reply_msg)</dt></dl>
+
+<dl><dt><a name="Pythonian-send_with_continuation"><strong>send_with_continuation</strong></a>(self, msg, cont)</dt></dl>
+
+<dl><dt><a name="Pythonian-subscribe_request"><strong>subscribe_request</strong></a>(self, req_type)</dt></dl>
+
+<dl><dt><a name="Pythonian-subscribe_tell"><strong>subscribe_tell</strong></a>(self, tell_type)</dt></dl>
+
+<hr>
+Data descriptors inherited from <a href="kqml.kqml_module.html#KQMLModule">kqml.kqml_module.KQMLModule</a>:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="Subscription">class <strong>Subscription</strong></a>(<a href="builtins.html#object">builtins.object</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt>A&nbsp;simple&nbsp;class&nbsp;to&nbsp;handle&nbsp;subscriptions&nbsp;to&nbsp;a&nbsp;pattern,&nbsp;and&nbsp;updating&nbsp;the<br>
+data&nbsp;associated&nbsp;with&nbsp;it.<br>
+&nbsp;<br>
+Attributes:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;new_data&nbsp;(Any):&nbsp;new&nbsp;data&nbsp;to&nbsp;be&nbsp;used&nbsp;in&nbsp;updating&nbsp;the&nbsp;subscription&nbsp;query<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;pattern&nbsp;(passed&nbsp;along&nbsp;to&nbsp;_response_to_query).<br>
+&nbsp;&nbsp;&nbsp;&nbsp;old_data&nbsp;(Any):&nbsp;copy&nbsp;of&nbsp;the&nbsp;new&nbsp;data&nbsp;after&nbsp;it&nbsp;has&nbsp;been&nbsp;retired,&nbsp;used<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;for&nbsp;only&nbsp;updating&nbsp;new&nbsp;if&nbsp;it&nbsp;differs&nbsp;from&nbsp;the&nbsp;last&nbsp;value.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;subscribers&nbsp;(list):&nbsp;list&nbsp;of&nbsp;subscription&nbsp;messages&nbsp;to&nbsp;reply&nbsp;to&nbsp;when<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;there&nbsp;is&nbsp;new&nbsp;data<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%">Methods defined here:<br>
+<dl><dt><a name="Subscription-__getitem__"><strong>__getitem__</strong></a>(self, subscriber_number:int)</dt></dl>
+
+<dl><dt><a name="Subscription-__init__"><strong>__init__</strong></a>(self)</dt><dd><tt>Initialize&nbsp;self.&nbsp;&nbsp;See&nbsp;help(type(self))&nbsp;for&nbsp;accurate&nbsp;signature.</tt></dd></dl>
+
+<dl><dt><a name="Subscription-__len__"><strong>__len__</strong></a>(self)</dt></dl>
+
+<dl><dt><a name="Subscription-__str__"><strong>__str__</strong></a>(self)</dt><dd><tt>Return&nbsp;str(self).</tt></dd></dl>
+
+<dl><dt><a name="Subscription-retire_data"><strong>retire_data</strong></a>(self)</dt><dd><tt>Cycles&nbsp;new_data&nbsp;to&nbsp;old_data&nbsp;and&nbsp;resets&nbsp;new_data</tt></dd></dl>
+
+<dl><dt><a name="Subscription-subscribe"><strong>subscribe</strong></a>(self, subscriber:kqml.kqml_performative.KQMLPerformative)</dt><dd><tt>Adds&nbsp;a&nbsp;subscriber&nbsp;to&nbsp;the&nbsp;list&nbsp;of&nbsp;subscribers.<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;subscriber&nbsp;(KQMLPerformative):&nbsp;msg&nbsp;sent&nbsp;to&nbsp;subscribe&nbsp;an&nbsp;agent<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;so&nbsp;that&nbsp;when&nbsp;new&nbsp;data&nbsp;is&nbsp;polled&nbsp;the&nbsp;subscribers&nbsp;can&nbsp;simply<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;be&nbsp;replied&nbsp;to</tt></dd></dl>
+
+<dl><dt><a name="Subscription-update"><strong>update</strong></a>(self, data:Any)</dt><dd><tt>Checks&nbsp;that&nbsp;this&nbsp;is&nbsp;indeed&nbsp;an&nbsp;update&nbsp;(not&nbsp;the&nbsp;same&nbsp;as&nbsp;the&nbsp;previous<br>
+data),&nbsp;and&nbsp;if&nbsp;so&nbsp;set&nbsp;the&nbsp;new_data&nbsp;to&nbsp;the&nbsp;input&nbsp;data<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;data&nbsp;(Any):&nbsp;new&nbsp;data&nbsp;to&nbsp;be&nbsp;used&nbsp;in&nbsp;updating&nbsp;the&nbsp;subscription&nbsp;query<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;pattern&nbsp;(passed&nbsp;along&nbsp;to&nbsp;_response_to_query)</tt></dd></dl>
+
+<hr>
+Data descriptors defined here:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="SubscriptionManager">class <strong>SubscriptionManager</strong></a>(<a href="builtins.html#dict">builtins.dict</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt>Extention&nbsp;of&nbsp;<a href="builtins.html#dict">dict</a>&nbsp;for&nbsp;handling&nbsp;regular&nbsp;subscription&nbsp;operations<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%"><dl><dt>Method resolution order:</dt>
+<dd><a href="companionsKQML.pythonian.html#SubscriptionManager">SubscriptionManager</a></dd>
+<dd><a href="builtins.html#dict">builtins.dict</a></dd>
+<dd><a href="builtins.html#object">builtins.object</a></dd>
+</dl>
+<hr>
+Methods defined here:<br>
+<dl><dt><a name="SubscriptionManager-add_new_subscription"><strong>add_new_subscription</strong></a>(self, pattern:str)</dt><dd><tt>Adds&nbsp;a&nbsp;new&nbsp;<a href="#Subscription">Subscription</a>&nbsp;<a href="builtins.html#object">object</a>&nbsp;as&nbsp;the&nbsp;value&nbsp;to&nbsp;a&nbsp;key&nbsp;of&nbsp;pattern<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pattern&nbsp;(str):&nbsp;query&nbsp;pattern&nbsp;associated&nbsp;with&nbsp;this&nbsp;subscription</tt></dd></dl>
+
+<dl><dt><a name="SubscriptionManager-retire_data"><strong>retire_data</strong></a>(self, pattern:str)</dt><dd><tt>Retires&nbsp;the&nbsp;data&nbsp;associated&nbsp;with&nbsp;a&nbsp;subscription<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pattern&nbsp;(str):&nbsp;query&nbsp;pattern&nbsp;associated&nbsp;with&nbsp;a&nbsp;subscription</tt></dd></dl>
+
+<dl><dt><a name="SubscriptionManager-subscribe"><strong>subscribe</strong></a>(self, pattern:str, subscriber:kqml.kqml_performative.KQMLPerformative)</dt><dd><tt>Add&nbsp;a&nbsp;subscriber&nbsp;to&nbsp;the&nbsp;specified&nbsp;subscription<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pattern&nbsp;(str):&nbsp;query&nbsp;pattern&nbsp;associated&nbsp;with&nbsp;a&nbsp;subscription<br>
+&nbsp;&nbsp;&nbsp;&nbsp;subscriber&nbsp;(KQMLPerformative):&nbsp;msg&nbsp;sent&nbsp;to&nbsp;subscribe&nbsp;an&nbsp;agent<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;so&nbsp;that&nbsp;when&nbsp;new&nbsp;data&nbsp;is&nbsp;polled&nbsp;the&nbsp;subscribers&nbsp;can&nbsp;simply<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;be&nbsp;replied&nbsp;to</tt></dd></dl>
+
+<dl><dt><a name="SubscriptionManager-update"><strong>update</strong></a>(self, pattern:str, data:Any)</dt><dd><tt>Updates&nbsp;the&nbsp;data&nbsp;associated&nbsp;with&nbsp;a&nbsp;subscription<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pattern&nbsp;(str):&nbsp;query&nbsp;pattern&nbsp;associated&nbsp;with&nbsp;a&nbsp;subscription<br>
+&nbsp;&nbsp;&nbsp;&nbsp;data&nbsp;(Any):&nbsp;data&nbsp;to&nbsp;update&nbsp;the&nbsp;pattern&nbsp;with</tt></dd></dl>
+
+<hr>
+Data descriptors defined here:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<hr>
+Methods inherited from <a href="builtins.html#dict">builtins.dict</a>:<br>
+<dl><dt><a name="SubscriptionManager-__contains__"><strong>__contains__</strong></a>(self, key, /)</dt><dd><tt>True&nbsp;if&nbsp;D&nbsp;has&nbsp;a&nbsp;key&nbsp;k,&nbsp;else&nbsp;False.</tt></dd></dl>
+
+<dl><dt><a name="SubscriptionManager-__delitem__"><strong>__delitem__</strong></a>(self, key, /)</dt><dd><tt>Delete&nbsp;self[key].</tt></dd></dl>
+
+<dl><dt><a name="SubscriptionManager-__eq__"><strong>__eq__</strong></a>(self, value, /)</dt><dd><tt>Return&nbsp;self==value.</tt></dd></dl>
+
+<dl><dt><a name="SubscriptionManager-__ge__"><strong>__ge__</strong></a>(self, value, /)</dt><dd><tt>Return&nbsp;self&gt;=value.</tt></dd></dl>
+
+<dl><dt><a name="SubscriptionManager-__getattribute__"><strong>__getattribute__</strong></a>(self, name, /)</dt><dd><tt>Return&nbsp;getattr(self,&nbsp;name).</tt></dd></dl>
+
+<dl><dt><a name="SubscriptionManager-__getitem__"><strong>__getitem__</strong></a>(...)</dt><dd><tt>x.<a href="#SubscriptionManager-__getitem__">__getitem__</a>(y)&nbsp;&lt;==&gt;&nbsp;x[y]</tt></dd></dl>
+
+<dl><dt><a name="SubscriptionManager-__gt__"><strong>__gt__</strong></a>(self, value, /)</dt><dd><tt>Return&nbsp;self&gt;value.</tt></dd></dl>
+
+<dl><dt><a name="SubscriptionManager-__init__"><strong>__init__</strong></a>(self, /, *args, **kwargs)</dt><dd><tt>Initialize&nbsp;self.&nbsp;&nbsp;See&nbsp;help(type(self))&nbsp;for&nbsp;accurate&nbsp;signature.</tt></dd></dl>
+
+<dl><dt><a name="SubscriptionManager-__iter__"><strong>__iter__</strong></a>(self, /)</dt><dd><tt>Implement&nbsp;iter(self).</tt></dd></dl>
+
+<dl><dt><a name="SubscriptionManager-__le__"><strong>__le__</strong></a>(self, value, /)</dt><dd><tt>Return&nbsp;self&lt;=value.</tt></dd></dl>
+
+<dl><dt><a name="SubscriptionManager-__len__"><strong>__len__</strong></a>(self, /)</dt><dd><tt>Return&nbsp;len(self).</tt></dd></dl>
+
+<dl><dt><a name="SubscriptionManager-__lt__"><strong>__lt__</strong></a>(self, value, /)</dt><dd><tt>Return&nbsp;self&lt;value.</tt></dd></dl>
+
+<dl><dt><a name="SubscriptionManager-__ne__"><strong>__ne__</strong></a>(self, value, /)</dt><dd><tt>Return&nbsp;self!=value.</tt></dd></dl>
+
+<dl><dt><a name="SubscriptionManager-__new__"><strong>__new__</strong></a>(*args, **kwargs)<font color="#909090"><font face="helvetica, arial"> from <a href="builtins.html#type">builtins.type</a></font></font></dt><dd><tt>Create&nbsp;and&nbsp;return&nbsp;a&nbsp;new&nbsp;<a href="builtins.html#object">object</a>.&nbsp;&nbsp;See&nbsp;help(type)&nbsp;for&nbsp;accurate&nbsp;signature.</tt></dd></dl>
+
+<dl><dt><a name="SubscriptionManager-__repr__"><strong>__repr__</strong></a>(self, /)</dt><dd><tt>Return&nbsp;repr(self).</tt></dd></dl>
+
+<dl><dt><a name="SubscriptionManager-__setitem__"><strong>__setitem__</strong></a>(self, key, value, /)</dt><dd><tt>Set&nbsp;self[key]&nbsp;to&nbsp;value.</tt></dd></dl>
+
+<dl><dt><a name="SubscriptionManager-__sizeof__"><strong>__sizeof__</strong></a>(...)</dt><dd><tt>D.<a href="#SubscriptionManager-__sizeof__">__sizeof__</a>()&nbsp;-&gt;&nbsp;size&nbsp;of&nbsp;D&nbsp;in&nbsp;memory,&nbsp;in&nbsp;bytes</tt></dd></dl>
+
+<dl><dt><a name="SubscriptionManager-clear"><strong>clear</strong></a>(...)</dt><dd><tt>D.<a href="#SubscriptionManager-clear">clear</a>()&nbsp;-&gt;&nbsp;None.&nbsp;&nbsp;Remove&nbsp;all&nbsp;items&nbsp;from&nbsp;D.</tt></dd></dl>
+
+<dl><dt><a name="SubscriptionManager-copy"><strong>copy</strong></a>(...)</dt><dd><tt>D.<a href="#SubscriptionManager-copy">copy</a>()&nbsp;-&gt;&nbsp;a&nbsp;shallow&nbsp;copy&nbsp;of&nbsp;D</tt></dd></dl>
+
+<dl><dt><a name="SubscriptionManager-fromkeys"><strong>fromkeys</strong></a>(iterable, value=None, /)<font color="#909090"><font face="helvetica, arial"> from <a href="builtins.html#type">builtins.type</a></font></font></dt><dd><tt>Returns&nbsp;a&nbsp;new&nbsp;<a href="builtins.html#dict">dict</a>&nbsp;with&nbsp;keys&nbsp;from&nbsp;iterable&nbsp;and&nbsp;values&nbsp;equal&nbsp;to&nbsp;value.</tt></dd></dl>
+
+<dl><dt><a name="SubscriptionManager-get"><strong>get</strong></a>(...)</dt><dd><tt>D.<a href="#SubscriptionManager-get">get</a>(k[,d])&nbsp;-&gt;&nbsp;D[k]&nbsp;if&nbsp;k&nbsp;in&nbsp;D,&nbsp;else&nbsp;d.&nbsp;&nbsp;d&nbsp;defaults&nbsp;to&nbsp;None.</tt></dd></dl>
+
+<dl><dt><a name="SubscriptionManager-items"><strong>items</strong></a>(...)</dt><dd><tt>D.<a href="#SubscriptionManager-items">items</a>()&nbsp;-&gt;&nbsp;a&nbsp;set-like&nbsp;<a href="builtins.html#object">object</a>&nbsp;providing&nbsp;a&nbsp;view&nbsp;on&nbsp;D's&nbsp;items</tt></dd></dl>
+
+<dl><dt><a name="SubscriptionManager-keys"><strong>keys</strong></a>(...)</dt><dd><tt>D.<a href="#SubscriptionManager-keys">keys</a>()&nbsp;-&gt;&nbsp;a&nbsp;set-like&nbsp;<a href="builtins.html#object">object</a>&nbsp;providing&nbsp;a&nbsp;view&nbsp;on&nbsp;D's&nbsp;keys</tt></dd></dl>
+
+<dl><dt><a name="SubscriptionManager-pop"><strong>pop</strong></a>(...)</dt><dd><tt>D.<a href="#SubscriptionManager-pop">pop</a>(k[,d])&nbsp;-&gt;&nbsp;v,&nbsp;remove&nbsp;specified&nbsp;key&nbsp;and&nbsp;return&nbsp;the&nbsp;corresponding&nbsp;value.<br>
+If&nbsp;key&nbsp;is&nbsp;not&nbsp;found,&nbsp;d&nbsp;is&nbsp;returned&nbsp;if&nbsp;given,&nbsp;otherwise&nbsp;KeyError&nbsp;is&nbsp;raised</tt></dd></dl>
+
+<dl><dt><a name="SubscriptionManager-popitem"><strong>popitem</strong></a>(...)</dt><dd><tt>D.<a href="#SubscriptionManager-popitem">popitem</a>()&nbsp;-&gt;&nbsp;(k,&nbsp;v),&nbsp;remove&nbsp;and&nbsp;return&nbsp;some&nbsp;(key,&nbsp;value)&nbsp;pair&nbsp;as&nbsp;a<br>
+2-tuple;&nbsp;but&nbsp;raise&nbsp;KeyError&nbsp;if&nbsp;D&nbsp;is&nbsp;empty.</tt></dd></dl>
+
+<dl><dt><a name="SubscriptionManager-setdefault"><strong>setdefault</strong></a>(...)</dt><dd><tt>D.<a href="#SubscriptionManager-setdefault">setdefault</a>(k[,d])&nbsp;-&gt;&nbsp;D.<a href="#SubscriptionManager-get">get</a>(k,d),&nbsp;also&nbsp;set&nbsp;D[k]=d&nbsp;if&nbsp;k&nbsp;not&nbsp;in&nbsp;D</tt></dd></dl>
+
+<dl><dt><a name="SubscriptionManager-values"><strong>values</strong></a>(...)</dt><dd><tt>D.<a href="#SubscriptionManager-values">values</a>()&nbsp;-&gt;&nbsp;an&nbsp;<a href="builtins.html#object">object</a>&nbsp;providing&nbsp;a&nbsp;view&nbsp;on&nbsp;D's&nbsp;values</tt></dd></dl>
+
+<hr>
+Data and other attributes inherited from <a href="builtins.html#dict">builtins.dict</a>:<br>
+<dl><dt><strong>__hash__</strong> = None</dl>
+
+</td></tr></table></td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#eeaa77">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Functions</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#eeaa77"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><dl><dt><a name="-sleep"><strong>sleep</strong></a>(...)</dt><dd><tt><a href="#-sleep">sleep</a>(seconds)<br>
+&nbsp;<br>
+Delay&nbsp;execution&nbsp;for&nbsp;a&nbsp;given&nbsp;number&nbsp;of&nbsp;seconds.&nbsp;&nbsp;The&nbsp;argument&nbsp;may&nbsp;be<br>
+a&nbsp;floating&nbsp;point&nbsp;number&nbsp;for&nbsp;subsecond&nbsp;precision.</tt></dd></dl>
+ <dl><dt><a name="-test"><strong>test</strong></a>(test_input:Any)</dt><dd><tt>test&nbsp;function&nbsp;for&nbsp;simple&nbsp;<a href="#Pythonian">Pythonian</a>&nbsp;test&nbsp;for&nbsp;achieve<br>
+&nbsp;<br>
+Arguments:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;test_input&nbsp;(Any):&nbsp;thing&nbsp;to&nbsp;be&nbsp;printed<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;1,&nbsp;always&nbsp;1.&nbsp;For&nbsp;testing&nbsp;purposes.</tt></dd></dl>
+</td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#55aa55">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Data</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#55aa55"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><strong>Any</strong> = typing.Any<br>
+<strong>DEBUG</strong> = 10<br>
+<strong>INFO</strong> = 20<br>
+<strong>LOGGER</strong> = &lt;Logger companionsKQML.pythonian (INFO)&gt;</td></tr></table>
+</body></html>

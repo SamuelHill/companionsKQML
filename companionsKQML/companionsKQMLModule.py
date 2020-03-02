@@ -5,7 +5,7 @@
 # @Author:      Samuel Hill
 # @Date:        2020-01-29 14:48:19
 # @Last Modified by:   Samuel Hill
-# @Last Modified time: 2020-03-02 12:58:30
+# @Last Modified time: 2020-03-02 16:01:08
 
 """CompanionsKQMLModule, Override of KQMLModule for creation of Companions
 agents. Adds a KQML socket server that is kept alive in a thread for
@@ -81,6 +81,8 @@ class CompanionsKQMLModule(KQMLModule):
             should be set to a new name for each new agent. Currently all
             instances of this class will have the same name as they are the
             same type of agent.
+        num_subs (int): The number of subscriptions that the agent has (only
+            used later in Pythonian)
         out (BufferedWriter): Connection to the Companions KQML socket server,
             created from send_socket, used by send
         port (int): port number that Companions is hosted on
@@ -135,6 +137,7 @@ class CompanionsKQMLModule(KQMLModule):
         # UPDATES
         self.starttime = datetime.now()
         self.state = 'idle'
+        self.num_subs = 0
         # LOGGING / DEBUG
         self.debug = debug
         if self.debug:
@@ -368,7 +371,7 @@ class CompanionsKQMLModule(KQMLModule):
             reply_content = (
                 f'(update :sender {self.name} :content (:agent {self.name} '
                 f':uptime {self._uptime()} :status :OK :state {self.state} '
-                f':machine {gethostname()}))'
+                f':machine {gethostname()} :subscriptions {self.num_subs}))'
             )
             self.reply_on_local_port(msg, performative(reply_content))
         else:

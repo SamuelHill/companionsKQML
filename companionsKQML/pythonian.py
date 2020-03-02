@@ -5,7 +5,7 @@
 # @Author:      Samuel Hill
 # @Date:        2020-02-10 16:10:26
 # @Last Modified by:   Samuel Hill
-# @Last Modified time: 2020-03-02 12:57:30
+# @Last Modified time: 2020-03-02 16:02:12
 
 """Pythonian agent, sits on top of the modified KQMLModule -
 CompanionsKQMLModule. Uses subscription management classes to allow for cleaner
@@ -305,6 +305,7 @@ class Pythonian(CompanionsKQMLModule):
             raise ValueError('pattern must contain at least a predicate')
         self.subscriptions.add_new_subscription(pattern)
         self.advertise_subscribe(pattern)
+        self.num_subs += 1
 
     def update_subscription(self, pattern: str, *args: Any):
         """Looks to see if the arguments to pattern have changes since last

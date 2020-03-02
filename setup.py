@@ -2,12 +2,12 @@
 # @Author: Samuel Hill
 # @Date:   2020-02-13 14:50:39
 # @Last Modified by:   Samuel Hill
-# @Last Modified time: 2020-03-02 15:21:05
+# @Last Modified time: 2020-03-02 16:03:10
 
 from setuptools import setup
 
 setup(name='companionsKQML',
-      version='1.0.1',
+      version='1.0.2',
       packages=['companionsKQML'],
       python_requires='>=3.0',
       install_requires=['pykqml>=1.1', 'psutil>=5.6.5',

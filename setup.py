@@ -2,7 +2,7 @@
 # @Author: Samuel Hill
 # @Date:   2020-02-13 14:50:39
 # @Last Modified by:   Samuel Hill
-# @Last Modified time: 2020-03-02 13:55:43
+# @Last Modified time: 2020-03-02 15:07:32
 
 from setuptools import setup
 
@@ -17,7 +17,7 @@ setup(name='companionsKQML',
       author_email='samuelhill2022@northwestern.edu',
       description='Companions agents in Python.',
       long_description=open('README.md', 'r').read(),
-      long_description_content_type="text/markdown",
+      long_description_content_type='text/markdown',
       classifiers=[
           'Development Status :: 4 - Beta',
           'Environment :: Console',

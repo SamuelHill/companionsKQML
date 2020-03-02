@@ -1,10 +1,10 @@
 # companionsKQML Package
 
-Package containing all basic Companions related KQML communication for Python. For detailed documentation of functions and objects see docs.
+Package containing all basic Companions related KQML communication for Python. For detailed documentation of functions and objects see [docs](https://github.com/SamuelHill/companionsKQML/tree/master/docs).
 
 ## companionsKQMLModule.py
 
-Module replacing pykqml's KQMLModule. Handles all low level actions relevant to keeping the module alive as a KQML server compatible with Companions (for more on the reasoning for this see archive/README.md). This includes;
+Module replacing [pykqml's KQMLModule](https://github.com/bgyori/pykqml/blob/master/kqml/kqml_module.py). Handles all low level actions relevant to keeping the module alive as a KQML server compatible with Companions (for more on the reasoning for this see archive/README.md). This includes;
 * a threaded socket server listening for messages (on the listener_port),
 * modified connect and send;
   * send now opens the send socket, sends the message, and closes the socket for every sent message so Companions knows that the message is over and doesn't time out,

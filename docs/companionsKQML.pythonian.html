@@ -8,7 +8,7 @@
 <td valign=bottom>&nbsp;<br>
 <font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong><a href="companionsKQML.html"><font color="#ffffff">companionsKQML</font></a>.pythonian</strong></big></big></font></td
 ><td align=right valign=bottom
-><font color="#ffffff" face="helvetica, arial"><a href=".">index</a><br><a href="file:c%3A%5Cqrg%5Ccompanions%5Cv1%5Cpythonian%5Ccompanionskqml%5Ccompanionskqml%5Cpythonian.py">c:\qrg\companions\v1\pythonian\companionskqml\companionskqml\pythonian.py</a></font></td></tr></table>
+><font color="#ffffff" face="helvetica, arial"><a href=".">index</a><br><a href="file:c%3A%5Cusers%5Csamuel%20hill%5Cappdata%5Clocal%5Cprograms%5Cpython%5Cpython36-32%5Clib%5Csite-packages%5Ccompanionskqml%5Cpythonian.py">c:\users\samuel hill\appdata\local\programs\python\python36-32\lib\site-packages\companionskqml\pythonian.py</a></font></td></tr></table>
     <p><tt><a href="#Pythonian">Pythonian</a>&nbsp;agent,&nbsp;sits&nbsp;on&nbsp;top&nbsp;of&nbsp;the&nbsp;modified&nbsp;KQMLModule&nbsp;-<br>
 <a href="companionsKQML.companionsKQMLModule.html#CompanionsKQMLModule">CompanionsKQMLModule</a>.&nbsp;Uses&nbsp;subscription&nbsp;management&nbsp;classes&nbsp;to&nbsp;allow&nbsp;for&nbsp;cleaner<br>
 subscription&nbsp;polling&nbsp;and&nbsp;updating.<br>
@@ -299,6 +299,16 @@ Returns:<br>
 &nbsp;<br>
 Args:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;argv&nbsp;(list,&nbsp;optional):&nbsp;argument&nbsp;list&nbsp;(typically&nbsp;from&nbsp;sys.argv)</tt></dd></dl>
+
+<hr>
+Static methods inherited from <a href="companionsKQML.companionsKQMLModule.html#CompanionsKQMLModule">companionsKQML.companionsKQMLModule.CompanionsKQMLModule</a>:<br>
+<dl><dt><a name="Pythonian-send_generic"><strong>send_generic</strong></a>(msg:kqml.kqml_performative.KQMLPerformative, out:_io.BufferedWriter)</dt><dd><tt>Basic&nbsp;send&nbsp;mechanism&nbsp;copied&nbsp;(more&nbsp;or&nbsp;less)&nbsp;from&nbsp;pykqml.&nbsp;Writes&nbsp;the<br>
+msg&nbsp;as&nbsp;a&nbsp;string&nbsp;to&nbsp;the&nbsp;output&nbsp;buffer&nbsp;then&nbsp;flushes&nbsp;it.<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;msg&nbsp;(KQMLPerformative):&nbsp;Message&nbsp;to&nbsp;be&nbsp;sent<br>
+&nbsp;&nbsp;&nbsp;&nbsp;out&nbsp;(BufferedWriter):&nbsp;The&nbsp;output&nbsp;to&nbsp;write&nbsp;to,&nbsp;needed&nbsp;for&nbsp;sending&nbsp;to<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Companions&nbsp;and&nbsp;sending&nbsp;on&nbsp;our&nbsp;own&nbsp;port.</tt></dd></dl>
 
 <hr>
 Methods inherited from <a href="kqml.kqml_module.html#KQMLModule">kqml.kqml_module.KQMLModule</a>:<br>

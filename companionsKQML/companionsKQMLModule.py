@@ -5,7 +5,7 @@
 # @Author:      Samuel Hill
 # @Date:        2020-01-29 14:48:19
 # @Last Modified by:   Samuel Hill
-# @Last Modified time: 2020-03-02 16:01:08
+# @Last Modified time: 2020-03-05 20:56:26
 
 """CompanionsKQMLModule, Override of KQMLModule for creation of Companions
 agents. Adds a KQML socket server that is kept alive in a thread for
@@ -33,7 +33,7 @@ from pathlib import Path
 from socket import socket, SocketIO, gethostname, SOL_SOCKET, SO_REUSEADDR, \
      SHUT_RDWR
 from subprocess import Popen
-from sys import argv as system_argument_list, exit as system_exit
+from sys import argv as system_argument_list
 from threading import Thread
 from time import sleep
 from typing import Optional, Any, TypeVar
@@ -118,11 +118,16 @@ class CompanionsKQMLModule(KQMLModule):
                 information.
         """
         # OUTPUTS
+        assert valid_ip(host), 'Host must be local or a valid ip address'
         self.host = host
+        assert valid_port(port), \
+            'port must be valid port number (1024-65535)'
         self.port = port
         self.send_socket = None
         self.out = None
         # INPUTS
+        assert valid_port(listener_port), \
+            'listener_port must be a valid port number (1024-65535)'
         self.listener_port = listener_port
         self.dispatcher = None
         self.listen_socket = socket()
@@ -131,7 +136,7 @@ class CompanionsKQMLModule(KQMLModule):
         self.listen_socket.listen(10)
         self.local_out = None
         self.ready = True
-        self.listener = Thread(target=self._listen, args=[])
+        self.listener = Thread(target=self.listen, args=[])
         # FROM KQMLModule
         self.reply_id_counter = 1
         # UPDATES
@@ -150,17 +155,73 @@ class CompanionsKQMLModule(KQMLModule):
         self.register()
 
     @classmethod
+    # pylint: disable=too-many-arguments
+    # We have 5 arguments plus the class to be created...
+    # 4 arguments from init (keeping init clean and low on arguments),
+    # 1 extra for controlling the check for companions function...
+    def init_check_companions(cls, host: str = None, port: int = None,
+                              listener_port: int = None, debug: bool = None,
+                              verify_port: bool = False):
+        """Helper method for constructing an agent, with a special helper
+        function if you are running companions on the same machine as this
+        agent (judged by connecting to localhost), without overwriting the
+        default values in init. When the companion is running on the same
+        system as the python agent we check to see if an expected process is
+        running, and if so we look for the listed port number that the process
+        publishes on startup. The check for companions will prioritize
+        executables before looking for something running from source
+        (CompanionsMicroServer64 before CompanionsServer64, allegro for local
+        development with a qrg directory installed at the root of some drive on
+        the system or in the home directory) and will return the first port
+        found (if multiple companions are running). If nothing is found, the
+        default value is relied on. If nothing is running but an old port
+        number is found, you won't connect either way as a companion isn't
+        running - it just might attempt a non-default port. As such, this can
+        be essentially used in place on regular init.
+
+        Args:
+            host (str, optional): the host value to pass to init, falls back to
+                init defaults.
+            port (int, optional): the port value to pass to init, falls back to
+                init defaults.
+            listener_port (int, optional): the listener_port value to pass to
+                init, falls back to init defaults.
+            debug (bool, optional): the debug value to pass to init, falls back
+                to init defaults.
+            verify_port (bool, optional): whether or not to verify the port
+                number by checking the pid in the portnum.dat file (created by
+                either running companions locally or in an exe) against the pid
+                found on the running process where the portnum.dat file was
+                found
+
+        Returns:
+            cls: instantiated cls object
+        """
+        kwargs = {}  # repack arguments for a non-default interrupting call
+        if host:
+            kwargs['host'] = host
+        if port:
+            kwargs['port'] = port
+        if listener_port:
+            kwargs['listener_port'] = listener_port
+        if debug:
+            kwargs['debug'] = debug
+        # If no port was passed in and either no host or localhost (no host
+        # would default to local)...
+        if not port and (True if not host else host in LOCALHOST_DEFS):
+            port = check_for_companions(verify_port)
+            if port:
+                kwargs['port'] = port
+        return cls(**kwargs)
+
+    @classmethod
     def parse_command_line_args(cls, argv: list = None):
         """Uses ArgumentParser to parse the args that this is called with.
-        Additional benefit of searching your system for a running Companion
-        (given a number of assumptions: qrg installed on the root of some drive
-        on the system or the home directory, CompanionsMicroServer64 before
-        CompanionsServer64, allegro for local dev, find running exe first then
-        find local dev, etc.) if no port is specified. If no running companion
-        is found, uses default values. The url - host, listener_port, and debug
-        arguments all also fall back to defaults. The additional argument -v
-        for verify_pids will assert that the pid's match between what is found
-        on the system and what is put in the file.
+        Additional benefit of searching your system for a running Companion if
+        no port is specified and host is local (defaults to local). If no
+        running companion is found use the default values from init. The
+        additional argument -v for verify_pids will assert that the pid's match
+        between what is found on the system and what is put in the file.
 
         Returns:
             cls: instantiated cls object
@@ -172,11 +233,11 @@ class CompanionsKQMLModule(KQMLModule):
             argv = system_argument_list
         _, *args = argv  # ignore name of file...
         parser = ArgumentParser(description='Run Pythonian agent.')
-        parser.add_argument('-u', '--url', type=_valid_ip,
+        parser.add_argument('-u', '--url', type=valid_ip,
                             help='url where companions kqml server is hosted')
-        parser.add_argument('-p', '--port', type=_valid_port,
+        parser.add_argument('-p', '--port', type=valid_port,
                             help='port companions kqml server is open on')
-        parser.add_argument('-l', '--listener_port', type=_valid_port,
+        parser.add_argument('-l', '--listener_port', type=valid_port,
                             help='port pythonian kqml server is open on')
         parser.add_argument('-d', '--debug', action='store_true',
                             help='whether or not to log debug messages')
@@ -188,22 +249,10 @@ class CompanionsKQMLModule(KQMLModule):
                                  'on the running process where the portnum.dat'
                                  ' file was found')
         args = parser.parse_args(args)
-        kwargs = {}  # repack arguments for a non-default interrupting call
-        if args.debug:  # odd interaction with store_true
-            kwargs['debug'] = args.debug
-        if args.listener_port:
-            kwargs['listener_port'] = args.listener_port
-        host_local = True  # default to hosting locally...
-        if args.url:
-            kwargs['host'] = args.url
-            host_local = args.url in LOCALHOST_DEFS
-        if args.port:
-            kwargs['port'] = args.port
-        if not args.port and host_local:
-            port = _check_for_companions(args.verify_port)
-            if port:
-                kwargs['port'] = port
-        return cls(**kwargs)
+        return cls.init_check_companions(host=args.url, port=args.port,
+                                         listener_port=args.listener_port,
+                                         debug=args.debug,
+                                         verify_port=args.verify_port)
 
     # OUTPUT FUNCTIONS (OVERRIDES):
 
@@ -217,10 +266,10 @@ class CompanionsKQMLModule(KQMLModule):
             socket_write = SocketIO(self.send_socket, 'w')
             self.out = BufferedWriter(socket_write)
         except OSError as error_msg:
-            LOGGER.critical('Connection failed: %s', error_msg)
+            LOGGER.error('Connection failed: %s', error_msg)
         # Verify that you can send messages...
         assert self.out is not None, \
-            "Connection formed but output (%s) not set." % (self.out)
+            'Connection formed but output (%s) not set.' % (self.out)
 
     def send(self, msg: KQMLPerformative):
         """Override of send from KQMLModule, opens and closes socket around
@@ -282,7 +331,7 @@ class CompanionsKQMLModule(KQMLModule):
 
     # INPUT FUNCTIONS (OVERRIDE AND ADDITION):
 
-    def _listen(self):
+    def listen(self):
         """Socket server, listens for new KQML messages and dispatches them
         accordingly.
 
@@ -301,16 +350,10 @@ class CompanionsKQMLModule(KQMLModule):
                 self.local_out = BufferedWriter(socket_write)
                 socket_read = SocketIO(connection, 'r')
                 read_input = KQMLReader(BufferedReader(socket_read))
-                # TODO: Test that this can handle multiple simultaneous
-                # connections safely... Will this dispatcher get overwritten
-                # with simultaneous messages OR does the new dispatcher create
-                # a copy of self (this custom KQMLModule) and use the relevant
-                # receive_eof linked to itself?
-                # Reminder - ThreadPools share data
                 self.dispatcher = KQMLDispatcher(self, read_input, self.name)
                 LOGGER.debug('Starting dispatcher: %s', self.dispatcher)
                 executor.submit(self.dispatcher.start)
-                # self.state = 'running'  # maybe?
+                self.state = 'dispatching'
 
     def receive_eof(self):
         """Override of KQMLModule, shuts down the dispatcher after receiving
@@ -331,20 +374,17 @@ class CompanionsKQMLModule(KQMLModule):
 
     def exit(self, n: int = 0):
         """Override of KQMLModule; Closes this agent, shuts down the threaded
-        execution loop, the dispatcher and the relevant sockets.
+        execution loop (by turning off the ready flag), shuts the dispatcher
+        down (if running), and then joins any running threads...
 
         Args:
             n (int, optional): the value to pass along to sys.exit
         """
         LOGGER.info('Shutting down agent: %s', self.name)
         self.ready = False  # may need to wait for threads to stop...
-        # TODO: ADD THIS, NEW IN PYKQML
-        # self.stop_waiting()
         if self.dispatcher is not None:
             self.dispatcher.shutdown()
-        self.listen_socket.shutdown(SHUT_RDWR)
-        self.listen_socket.close()
-        system_exit(n)
+        self.listener.join()
 
     # COMPANIONS SPECIFIC OVERRIDES:
 
@@ -370,7 +410,7 @@ class CompanionsKQMLModule(KQMLModule):
             LOGGER.info('Receive ping... %s', msg)
             reply_content = (
                 f'(update :sender {self.name} :content (:agent {self.name} '
-                f':uptime {self._uptime()} :status :OK :state {self.state} '
+                f':uptime {self.uptime()} :status :OK :state {self.state} '
                 f':machine {gethostname()} :subscriptions {self.num_subs}))'
             )
             self.reply_on_local_port(msg, performative(reply_content))
@@ -383,7 +423,7 @@ class CompanionsKQMLModule(KQMLModule):
 
     # HELPERS:
 
-    def _uptime(self) -> str:
+    def uptime(self) -> str:
         """Cyc-style time since start. Using the python-dateutil library to do
         simple relative delta calculations for the uptime.
 
@@ -398,9 +438,9 @@ class CompanionsKQMLModule(KQMLModule):
         time_diffs = [getattr(diff, time_period) for time_period in time_list]
         return f'({" ".join(map(str, time_diffs))})'
 
-    def _response_to_query(self, msg: KQMLPerformative,
-                           content: KQMLPerformative, results: Any,
-                           response_type: str):
+    def response_to_query(self, msg: KQMLPerformative,
+                          content: KQMLPerformative, results: Any,
+                          response_type: str):
         """Based on the response type, will create a properly formed reply
         with the results either input as patterns or bound to the arguments
         from the results. The reply is a tell which is then sent to Companions.
@@ -478,8 +518,8 @@ class ControlledCompanionsKQMLModule(CompanionsKQMLModule):
         LOGGER.info('Launched companions: %s', self.companions_process)
         while not portnum_path.exists():
             sleep(1)
-        kwargs['port'] = _get_port(portnum_path, self.companions_process.pid,
-                                   verify_port)
+        kwargs['port'] = get_port(portnum_path, self.companions_process.pid,
+                                  verify_port)
         super().__init__(**kwargs)
 
     @classmethod
@@ -620,7 +660,7 @@ def convert_to_int(to_be_int: Any) -> int:
 #                 Argument parsing & port convenience helpers                 #
 ###############################################################################
 
-def _valid_ip(string: str) -> str:
+def valid_ip(string: str) -> str:
     """argparse type checking function for ip addresses. Valid if the ip
     address is either localhost or meets either of the ip4 or ip6 standards.
 
@@ -643,7 +683,7 @@ def _valid_ip(string: str) -> str:
     return string
 
 
-def _valid_port(string: str) -> int:
+def valid_port(string: str) -> int:
     """argparse type checking/conversion function for portnumbers. Valid if the
     port number is in the range 1024 to 65535.
 
@@ -667,7 +707,7 @@ def _valid_port(string: str) -> int:
     return port_num
 
 
-def _check_for_companions(verify: bool = False) -> Optional[int]:
+def check_for_companions(verify: bool = False) -> Optional[int]:
     """A helper function that will check for a running companions executable
     OR for the allegro development environment (plus a qrg directory) and
     try to get it's port number from the port dictionary it creates in
@@ -687,13 +727,14 @@ def _check_for_companions(verify: bool = False) -> Optional[int]:
     # search for running companions executables
     companion = None
     for name in COMPANIONS_EXES:
-        process = _find_named_process(name, processes)
+        process = next((p.info for p in processes if name in p.info['name']),
+                       None)  # default value returned if no process found.
         if process:
             companion = process
             break
     if companion:
         portnum_path = Path(companion['exe']).with_name(PORTNUM)
-        potential_port = _get_port(portnum_path, companion['pid'], verify)
+        potential_port = get_port(portnum_path, companion['pid'], verify)
     if potential_port:
         return potential_port
     # search for the qrg directory (in default locations) and a running allegro
@@ -706,32 +747,19 @@ def _check_for_companions(verify: bool = False) -> Optional[int]:
         if qrg.exists():
             qrg_root = qrg
             break
-    allegro = _find_named_process('allegro.exe', processes)
+    # allegro = _find_named_process('allegro.exe', processes)
+    allegro = next((p.info for p in processes
+                    if 'allegro.exe' in p.info['name']), None)
     if qrg_root and allegro:
         portnum_path = qrg_root / 'companions' / 'v1' / PORTNUM
-        potential_port = _get_port(portnum_path, allegro['pid'], verify)
+        potential_port = get_port(portnum_path, allegro['pid'], verify)
     # Could have not found anything, in this case we return None by nature of
     # potential_port not having had a new value assigned
     return potential_port
 
 
-def _find_named_process(name: str, processes: dict) -> Optional[dict]:
-    """Searches for the named process in a list of running processes
-
-    Args:
-        name (str): process name you are searching for
-        processes (dict): list of processes to be searched over
-
-    Returns:
-        Optional[dict]: the process (name, pid, and exe) as a dict if found,
-            otherwise None
-    """
-    processes = [p.info for p in processes if name in p.info['name']]
-    return processes[0] if processes else None
-
-
-def _get_port(portnum_path: Path, process_pid: int,
-              verify: bool = False) -> Optional[int]:
+def get_port(portnum_path: Path, process_pid: int,
+             verify: bool = False) -> Optional[int]:
     """Gets the port number from the portnum.dat file as a dict. If verify is
     true the port number is only returned if the pid in the portnum file is a
     match with the process_pid passed in.

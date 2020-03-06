@@ -2,12 +2,12 @@
 # @Author: Samuel Hill
 # @Date:   2020-02-10 15:30:23
 # @Last Modified by:   Samuel Hill
-# @Last Modified time: 2020-03-02 16:03:14
+# @Last Modified time: 2020-03-05 16:39:28
 
 """Package containing a low level Companions specific KQML server module as
 well as the Pythonian module for higher level KQML communication."""
 
-__version__ = '1.0.2'
+__version__ = '1.1'
 
 # from logging import basicConfig, INFO
 from .pythonian import Pythonian

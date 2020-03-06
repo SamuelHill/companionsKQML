@@ -8,7 +8,7 @@
 <td valign=bottom>&nbsp;<br>
 <font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong><a href="companionsKQML.html"><font color="#ffffff">companionsKQML</font></a>.pythonian</strong></big></big></font></td
 ><td align=right valign=bottom
-><font color="#ffffff" face="helvetica, arial"><a href=".">index</a><br><a href="file:c%3A%5Cusers%5Csamuel%20hill%5Cappdata%5Clocal%5Cprograms%5Cpython%5Cpython36-32%5Clib%5Csite-packages%5Ccompanionskqml%5Cpythonian.py">c:\users\samuel hill\appdata\local\programs\python\python36-32\lib\site-packages\companionskqml\pythonian.py</a></font></td></tr></table>
+><font color="#ffffff" face="helvetica, arial"><a href=".">index</a><br><a href="file:c%3A%5Cqrg%5Ccompanions%5Cv1%5Cpythonian%5Ccompanionskqml%5Ccompanionskqml%5Cpythonian.py">c:\qrg\companions\v1\pythonian\companionskqml\companionskqml\pythonian.py</a></font></td></tr></table>
     <p><tt><a href="#Pythonian">Pythonian</a>&nbsp;agent,&nbsp;sits&nbsp;on&nbsp;top&nbsp;of&nbsp;the&nbsp;modified&nbsp;KQMLModule&nbsp;-<br>
 <a href="companionsKQML.companionsKQMLModule.html#CompanionsKQMLModule">CompanionsKQMLModule</a>.&nbsp;Uses&nbsp;subscription&nbsp;management&nbsp;classes&nbsp;to&nbsp;allow&nbsp;for&nbsp;cleaner<br>
 subscription&nbsp;polling&nbsp;and&nbsp;updating.<br>
@@ -141,6 +141,12 @@ Arguments:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;pattern&nbsp;(str):&nbsp;content&nbsp;to&nbsp;be&nbsp;advertised&nbsp;as&nbsp;a&nbsp;subscription&nbsp;to&nbsp;an<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ask-all</tt></dd></dl>
 
+<dl><dt><a name="Pythonian-exit"><strong>exit</strong></a>(self, n:int=0)</dt><dd><tt>Override&nbsp;of&nbsp;companionsKQMLModule&nbsp;exit,&nbsp;calls&nbsp;super().<a href="#Pythonian-exit">exit</a>(n)&nbsp;and<br>
+then&nbsp;joins&nbsp;the&nbsp;polling&nbsp;Thread.<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;n&nbsp;(int,&nbsp;optional):&nbsp;the&nbsp;value&nbsp;to&nbsp;pass&nbsp;along&nbsp;to&nbsp;sys.exit</tt></dd></dl>
+
 <dl><dt><a name="Pythonian-insert_data"><strong>insert_data</strong></a>(self, receiver:str, data:Any, wm_only:bool=False)</dt><dd><tt>Takes&nbsp;the&nbsp;data&nbsp;input&nbsp;by&nbsp;the&nbsp;user&nbsp;and&nbsp;processes&nbsp;it&nbsp;into&nbsp;an&nbsp;insert<br>
 message&nbsp;which&nbsp;is&nbsp;subsequently&nbsp;sent&nbsp;off&nbsp;to&nbsp;Companions.<br>
 &nbsp;<br>
@@ -169,6 +175,9 @@ Arguments:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;wm_only&nbsp;(bool,&nbsp;optional):&nbsp;whether&nbsp;or&nbsp;not&nbsp;this&nbsp;should&nbsp;only&nbsp;be<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;inserted&nbsp;into&nbsp;the&nbsp;working&nbsp;memory&nbsp;(default:&nbsp;False)</tt></dd></dl>
 
+<dl><dt><a name="Pythonian-poll_for_subscription_updates"><strong>poll_for_subscription_updates</strong></a>(self)</dt><dd><tt>Goes&nbsp;through&nbsp;the&nbsp;subscription&nbsp;updates&nbsp;as&nbsp;they&nbsp;come&nbsp;in&nbsp;and&nbsp;properly<br>
+respond&nbsp;to&nbsp;the&nbsp;query.</tt></dd></dl>
+
 <dl><dt><a name="Pythonian-receive_achieve"><strong>receive_achieve</strong></a>(self, msg:kqml.kqml_performative.KQMLPerformative, content:kqml.kqml_list.KQMLList)</dt><dd><tt>Overrides&nbsp;the&nbsp;default&nbsp;KQMLModule&nbsp;receive&nbsp;for&nbsp;achieves&nbsp;and&nbsp;instead<br>
 does&nbsp;basic&nbsp;error&nbsp;checking&nbsp;before&nbsp;attempting&nbsp;the&nbsp;action&nbsp;by&nbsp;calling&nbsp;the<br>
 proper&nbsp;ask&nbsp;function&nbsp;with&nbsp;the&nbsp;arguments&nbsp;passed&nbsp;along&nbsp;as&nbsp;inputs.<br>
@@ -187,7 +196,7 @@ Gets&nbsp;the&nbsp;arguments&nbsp;bindings&nbsp;from&nbsp;the&nbsp;cdr&nbsp;of&n
 (car)&nbsp;is&nbsp;then&nbsp;used&nbsp;to&nbsp;find&nbsp;the&nbsp;function&nbsp;bound&nbsp;to&nbsp;the&nbsp;ask&nbsp;predicate,&nbsp;and<br>
 that&nbsp;function&nbsp;is&nbsp;called&nbsp;with&nbsp;the&nbsp;bounded&nbsp;argument&nbsp;list&nbsp;unpacked&nbsp;into<br>
 it's&nbsp;own&nbsp;inputs.&nbsp;The&nbsp;resulting&nbsp;query&nbsp;is&nbsp;then&nbsp;passed&nbsp;along&nbsp;to&nbsp;the<br>
-_response_to_query&nbsp;helper&nbsp;which&nbsp;will&nbsp;properly&nbsp;respond&nbsp;to&nbsp;patterns&nbsp;or<br>
+response_to_query&nbsp;helper&nbsp;which&nbsp;will&nbsp;properly&nbsp;respond&nbsp;to&nbsp;patterns&nbsp;or<br>
 bindings&nbsp;based&nbsp;on&nbsp;out&nbsp;response&nbsp;type.<br>
 &nbsp;<br>
 Arguments:<br>
@@ -242,11 +251,15 @@ connections</tt></dd></dl>
 
 <dl><dt><a name="Pythonian-connect1"><strong>connect1</strong></a>(self)</dt></dl>
 
-<dl><dt><a name="Pythonian-exit"><strong>exit</strong></a>(self, n:int=0)</dt><dd><tt>Override&nbsp;of&nbsp;KQMLModule;&nbsp;Closes&nbsp;this&nbsp;agent,&nbsp;shuts&nbsp;down&nbsp;the&nbsp;threaded<br>
-execution&nbsp;loop,&nbsp;the&nbsp;dispatcher&nbsp;and&nbsp;the&nbsp;relevant&nbsp;sockets.<br>
+<dl><dt><a name="Pythonian-listen"><strong>listen</strong></a>(self)</dt><dd><tt>Socket&nbsp;server,&nbsp;listens&nbsp;for&nbsp;new&nbsp;KQML&nbsp;messages&nbsp;and&nbsp;dispatches&nbsp;them<br>
+accordingly.<br>
 &nbsp;<br>
-Args:<br>
-&nbsp;&nbsp;&nbsp;&nbsp;n&nbsp;(int,&nbsp;optional):&nbsp;the&nbsp;value&nbsp;to&nbsp;pass&nbsp;along&nbsp;to&nbsp;sys.exit</tt></dd></dl>
+Doesn't&nbsp;necessarily&nbsp;need&nbsp;threading;&nbsp;Could&nbsp;just&nbsp;start&nbsp;dispatcher&nbsp;and<br>
+after&nbsp;it&nbsp;returns&nbsp;accept&nbsp;next&nbsp;connection.&nbsp;This&nbsp;couldn't&nbsp;handle&nbsp;loads&nbsp;of<br>
+inputs&nbsp;while&nbsp;being&nbsp;bogged&nbsp;down&nbsp;processing.&nbsp;To&nbsp;avoid&nbsp;this&nbsp;issue&nbsp;we<br>
+thread&nbsp;the&nbsp;dispatching&nbsp;so&nbsp;the&nbsp;functions&nbsp;that&nbsp;get&nbsp;called&nbsp;are&nbsp;run&nbsp;in&nbsp;a<br>
+separate&nbsp;Thread.&nbsp;We're&nbsp;using&nbsp;ThreadPoolExecutor&nbsp;because&nbsp;sockets&nbsp;use&nbsp;io,<br>
+io&nbsp;is&nbsp;blocking&nbsp;and&nbsp;threads&nbsp;allow&nbsp;you&nbsp;to&nbsp;not&nbsp;block.</tt></dd></dl>
 
 <dl><dt><a name="Pythonian-receive_eof"><strong>receive_eof</strong></a>(self)</dt><dd><tt>Override&nbsp;of&nbsp;KQMLModule,&nbsp;shuts&nbsp;down&nbsp;the&nbsp;dispatcher&nbsp;after&nbsp;receiving<br>
 the&nbsp;end&nbsp;of&nbsp;file&nbsp;(eof)&nbsp;signal.&nbsp;This&nbsp;happens&nbsp;after&nbsp;every&nbsp;message...</tt></dd></dl>
@@ -266,6 +279,25 @@ Args:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;msg&nbsp;(KQMLPerformative):&nbsp;message&nbsp;to&nbsp;reply&nbsp;to<br>
 &nbsp;&nbsp;&nbsp;&nbsp;reply_msg&nbsp;(KQMLPerformative):&nbsp;message&nbsp;to&nbsp;reply&nbsp;with</tt></dd></dl>
 
+<dl><dt><a name="Pythonian-response_to_query"><strong>response_to_query</strong></a>(self, msg:kqml.kqml_performative.KQMLPerformative, content:kqml.kqml_performative.KQMLPerformative, results:Any, response_type:str)</dt><dd><tt>Based&nbsp;on&nbsp;the&nbsp;response&nbsp;type,&nbsp;will&nbsp;create&nbsp;a&nbsp;properly&nbsp;formed&nbsp;reply<br>
+with&nbsp;the&nbsp;results&nbsp;either&nbsp;input&nbsp;as&nbsp;patterns&nbsp;or&nbsp;bound&nbsp;to&nbsp;the&nbsp;arguments<br>
+from&nbsp;the&nbsp;results.&nbsp;The&nbsp;reply&nbsp;is&nbsp;a&nbsp;tell&nbsp;which&nbsp;is&nbsp;then&nbsp;sent&nbsp;to&nbsp;Companions.<br>
+&nbsp;<br>
+Goes&nbsp;through&nbsp;the&nbsp;arguments&nbsp;and&nbsp;the&nbsp;results&nbsp;together&nbsp;to&nbsp;either&nbsp;bind&nbsp;a<br>
+argument&nbsp;to&nbsp;the&nbsp;result&nbsp;or&nbsp;simple&nbsp;return&nbsp;the&nbsp;result&nbsp;in&nbsp;the&nbsp;place&nbsp;of&nbsp;that<br>
+argument.&nbsp;The&nbsp;reply&nbsp;content&nbsp;is&nbsp;filled&nbsp;with&nbsp;these&nbsp;argument/result&nbsp;lists<br>
+(they&nbsp;are&nbsp;listified&nbsp;before&nbsp;appending)&nbsp;before&nbsp;being&nbsp;added&nbsp;to&nbsp;the&nbsp;tell<br>
+message&nbsp;and&nbsp;subsequently&nbsp;sent&nbsp;off&nbsp;to&nbsp;Companions.<br>
+&nbsp;<br>
+Arguments:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;msg&nbsp;(KQMLPerformative):&nbsp;the&nbsp;message&nbsp;being&nbsp;passed&nbsp;along&nbsp;to&nbsp;reply<br>
+&nbsp;&nbsp;&nbsp;&nbsp;content&nbsp;(KQMLPerformative):&nbsp;query,&nbsp;starts&nbsp;with&nbsp;a&nbsp;predicate&nbsp;and&nbsp;the<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;remainder&nbsp;is&nbsp;the&nbsp;arguments<br>
+&nbsp;&nbsp;&nbsp;&nbsp;results&nbsp;(Any):&nbsp;The&nbsp;results&nbsp;of&nbsp;performing&nbsp;the&nbsp;query<br>
+&nbsp;&nbsp;&nbsp;&nbsp;response_type&nbsp;(str):&nbsp;the&nbsp;given&nbsp;response&nbsp;type,&nbsp;if&nbsp;it&nbsp;is&nbsp;not&nbsp;given&nbsp;or<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;is&nbsp;given&nbsp;to&nbsp;be&nbsp;pattern,&nbsp;the&nbsp;variable&nbsp;will&nbsp;be&nbsp;set&nbsp;to&nbsp;True,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;otherwise&nbsp;False</tt></dd></dl>
+
 <dl><dt><a name="Pythonian-send"><strong>send</strong></a>(self, msg:kqml.kqml_performative.KQMLPerformative)</dt><dd><tt>Override&nbsp;of&nbsp;send&nbsp;from&nbsp;KQMLModule,&nbsp;opens&nbsp;and&nbsp;closes&nbsp;socket&nbsp;around<br>
 send&nbsp;for&nbsp;proper&nbsp;signaling&nbsp;to&nbsp;Companions<br>
 &nbsp;<br>
@@ -281,18 +313,58 @@ Args:<br>
 
 <dl><dt><a name="Pythonian-start"><strong>start</strong></a>(self)</dt></dl>
 
+<dl><dt><a name="Pythonian-uptime"><strong>uptime</strong></a>(self) -&gt; str</dt><dd><tt>Cyc-style&nbsp;time&nbsp;since&nbsp;start.&nbsp;Using&nbsp;the&nbsp;python-dateutil&nbsp;library&nbsp;to&nbsp;do<br>
+simple&nbsp;relative&nbsp;delta&nbsp;calculations&nbsp;for&nbsp;the&nbsp;uptime.<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;str:&nbsp;string&nbsp;of&nbsp;the&nbsp;form<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'(years&nbsp;months&nbsp;days&nbsp;hours&nbsp;minutes&nbsp;seconds)'<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;where&nbsp;years,&nbsp;months,&nbsp;days,&nbsp;etc&nbsp;are&nbsp;the&nbsp;uptime&nbsp;in&nbsp;number&nbsp;of<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;years,&nbsp;months,&nbsp;days,&nbsp;etc.</tt></dd></dl>
+
 <hr>
 Class methods inherited from <a href="companionsKQML.companionsKQMLModule.html#CompanionsKQMLModule">companionsKQML.companionsKQMLModule.CompanionsKQMLModule</a>:<br>
+<dl><dt><a name="Pythonian-init_check_companions"><strong>init_check_companions</strong></a>(host:str=None, port:int=None, listener_port:int=None, debug:bool=None, verify_port:bool=False)<font color="#909090"><font face="helvetica, arial"> from <a href="builtins.html#type">builtins.type</a></font></font></dt><dd><tt>Helper&nbsp;method&nbsp;for&nbsp;constructing&nbsp;an&nbsp;agent,&nbsp;with&nbsp;a&nbsp;special&nbsp;helper<br>
+function&nbsp;if&nbsp;you&nbsp;are&nbsp;running&nbsp;companions&nbsp;on&nbsp;the&nbsp;same&nbsp;machine&nbsp;as&nbsp;this<br>
+agent&nbsp;(judged&nbsp;by&nbsp;connecting&nbsp;to&nbsp;localhost),&nbsp;without&nbsp;overwriting&nbsp;the<br>
+default&nbsp;values&nbsp;in&nbsp;init.&nbsp;When&nbsp;the&nbsp;companion&nbsp;is&nbsp;running&nbsp;on&nbsp;the&nbsp;same<br>
+system&nbsp;as&nbsp;the&nbsp;python&nbsp;agent&nbsp;we&nbsp;check&nbsp;to&nbsp;see&nbsp;if&nbsp;an&nbsp;expected&nbsp;process&nbsp;is<br>
+running,&nbsp;and&nbsp;if&nbsp;so&nbsp;we&nbsp;look&nbsp;for&nbsp;the&nbsp;listed&nbsp;port&nbsp;number&nbsp;that&nbsp;the&nbsp;process<br>
+publishes&nbsp;on&nbsp;startup.&nbsp;The&nbsp;check&nbsp;for&nbsp;companions&nbsp;will&nbsp;prioritize<br>
+executables&nbsp;before&nbsp;looking&nbsp;for&nbsp;something&nbsp;running&nbsp;from&nbsp;source<br>
+(CompanionsMicroServer64&nbsp;before&nbsp;CompanionsServer64,&nbsp;allegro&nbsp;for&nbsp;local<br>
+development&nbsp;with&nbsp;a&nbsp;qrg&nbsp;directory&nbsp;installed&nbsp;at&nbsp;the&nbsp;root&nbsp;of&nbsp;some&nbsp;drive&nbsp;on<br>
+the&nbsp;system&nbsp;or&nbsp;in&nbsp;the&nbsp;home&nbsp;directory)&nbsp;and&nbsp;will&nbsp;return&nbsp;the&nbsp;first&nbsp;port<br>
+found&nbsp;(if&nbsp;multiple&nbsp;companions&nbsp;are&nbsp;running).&nbsp;If&nbsp;nothing&nbsp;is&nbsp;found,&nbsp;the<br>
+default&nbsp;value&nbsp;is&nbsp;relied&nbsp;on.&nbsp;If&nbsp;nothing&nbsp;is&nbsp;running&nbsp;but&nbsp;an&nbsp;old&nbsp;port<br>
+number&nbsp;is&nbsp;found,&nbsp;you&nbsp;won't&nbsp;connect&nbsp;either&nbsp;way&nbsp;as&nbsp;a&nbsp;companion&nbsp;isn't<br>
+running&nbsp;-&nbsp;it&nbsp;just&nbsp;might&nbsp;attempt&nbsp;a&nbsp;non-default&nbsp;port.&nbsp;As&nbsp;such,&nbsp;this&nbsp;can<br>
+be&nbsp;essentially&nbsp;used&nbsp;in&nbsp;place&nbsp;on&nbsp;regular&nbsp;init.<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;host&nbsp;(str,&nbsp;optional):&nbsp;the&nbsp;host&nbsp;value&nbsp;to&nbsp;pass&nbsp;to&nbsp;init,&nbsp;falls&nbsp;back&nbsp;to<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;init&nbsp;defaults.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;port&nbsp;(int,&nbsp;optional):&nbsp;the&nbsp;port&nbsp;value&nbsp;to&nbsp;pass&nbsp;to&nbsp;init,&nbsp;falls&nbsp;back&nbsp;to<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;init&nbsp;defaults.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;listener_port&nbsp;(int,&nbsp;optional):&nbsp;the&nbsp;listener_port&nbsp;value&nbsp;to&nbsp;pass&nbsp;to<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;init,&nbsp;falls&nbsp;back&nbsp;to&nbsp;init&nbsp;defaults.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;debug&nbsp;(bool,&nbsp;optional):&nbsp;the&nbsp;debug&nbsp;value&nbsp;to&nbsp;pass&nbsp;to&nbsp;init,&nbsp;falls&nbsp;back<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;to&nbsp;init&nbsp;defaults.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;verify_port&nbsp;(bool,&nbsp;optional):&nbsp;whether&nbsp;or&nbsp;not&nbsp;to&nbsp;verify&nbsp;the&nbsp;port<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;number&nbsp;by&nbsp;checking&nbsp;the&nbsp;pid&nbsp;in&nbsp;the&nbsp;portnum.dat&nbsp;file&nbsp;(created&nbsp;by<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;either&nbsp;running&nbsp;companions&nbsp;locally&nbsp;or&nbsp;in&nbsp;an&nbsp;exe)&nbsp;against&nbsp;the&nbsp;pid<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;found&nbsp;on&nbsp;the&nbsp;running&nbsp;process&nbsp;where&nbsp;the&nbsp;portnum.dat&nbsp;file&nbsp;was<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;found<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;cls:&nbsp;instantiated&nbsp;cls&nbsp;<a href="builtins.html#object">object</a></tt></dd></dl>
+
 <dl><dt><a name="Pythonian-parse_command_line_args"><strong>parse_command_line_args</strong></a>(argv:list=None)<font color="#909090"><font face="helvetica, arial"> from <a href="builtins.html#type">builtins.type</a></font></font></dt><dd><tt>Uses&nbsp;ArgumentParser&nbsp;to&nbsp;parse&nbsp;the&nbsp;args&nbsp;that&nbsp;this&nbsp;is&nbsp;called&nbsp;with.<br>
-Additional&nbsp;benefit&nbsp;of&nbsp;searching&nbsp;your&nbsp;system&nbsp;for&nbsp;a&nbsp;running&nbsp;Companion<br>
-(given&nbsp;a&nbsp;number&nbsp;of&nbsp;assumptions:&nbsp;qrg&nbsp;installed&nbsp;on&nbsp;the&nbsp;root&nbsp;of&nbsp;some&nbsp;drive<br>
-on&nbsp;the&nbsp;system&nbsp;or&nbsp;the&nbsp;home&nbsp;directory,&nbsp;CompanionsMicroServer64&nbsp;before<br>
-CompanionsServer64,&nbsp;allegro&nbsp;for&nbsp;local&nbsp;dev,&nbsp;find&nbsp;running&nbsp;exe&nbsp;first&nbsp;then<br>
-find&nbsp;local&nbsp;dev,&nbsp;etc.)&nbsp;if&nbsp;no&nbsp;port&nbsp;is&nbsp;specified.&nbsp;If&nbsp;no&nbsp;running&nbsp;companion<br>
-is&nbsp;found,&nbsp;uses&nbsp;default&nbsp;values.&nbsp;The&nbsp;url&nbsp;-&nbsp;host,&nbsp;listener_port,&nbsp;and&nbsp;debug<br>
-arguments&nbsp;all&nbsp;also&nbsp;fall&nbsp;back&nbsp;to&nbsp;defaults.&nbsp;The&nbsp;additional&nbsp;argument&nbsp;-v<br>
-for&nbsp;verify_pids&nbsp;will&nbsp;assert&nbsp;that&nbsp;the&nbsp;pid's&nbsp;match&nbsp;between&nbsp;what&nbsp;is&nbsp;found<br>
-on&nbsp;the&nbsp;system&nbsp;and&nbsp;what&nbsp;is&nbsp;put&nbsp;in&nbsp;the&nbsp;file.<br>
+Additional&nbsp;benefit&nbsp;of&nbsp;searching&nbsp;your&nbsp;system&nbsp;for&nbsp;a&nbsp;running&nbsp;Companion&nbsp;if<br>
+no&nbsp;port&nbsp;is&nbsp;specified&nbsp;and&nbsp;host&nbsp;is&nbsp;local&nbsp;(defaults&nbsp;to&nbsp;local).&nbsp;If&nbsp;no<br>
+running&nbsp;companion&nbsp;is&nbsp;found&nbsp;use&nbsp;the&nbsp;default&nbsp;values&nbsp;from&nbsp;init.&nbsp;The<br>
+additional&nbsp;argument&nbsp;-v&nbsp;for&nbsp;verify_pids&nbsp;will&nbsp;assert&nbsp;that&nbsp;the&nbsp;pid's&nbsp;match<br>
+between&nbsp;what&nbsp;is&nbsp;found&nbsp;on&nbsp;the&nbsp;system&nbsp;and&nbsp;what&nbsp;is&nbsp;put&nbsp;in&nbsp;the&nbsp;file.<br>
 &nbsp;<br>
 Returns:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;cls:&nbsp;instantiated&nbsp;cls&nbsp;<a href="builtins.html#object">object</a><br>
@@ -392,6 +464,8 @@ Methods inherited from <a href="kqml.kqml_module.html#KQMLModule">kqml.kqml_modu
 
 <dl><dt><a name="Pythonian-send_with_continuation"><strong>send_with_continuation</strong></a>(self, msg, cont)</dt></dl>
 
+<dl><dt><a name="Pythonian-stop_waiting"><strong>stop_waiting</strong></a>(self)</dt></dl>
+
 <dl><dt><a name="Pythonian-subscribe_request"><strong>subscribe_request</strong></a>(self, req_type)</dt></dl>
 
 <dl><dt><a name="Pythonian-subscribe_tell"><strong>subscribe_tell</strong></a>(self, tell_type)</dt></dl>
@@ -416,7 +490,7 @@ data&nbsp;associated&nbsp;with&nbsp;it.<br>
 &nbsp;<br>
 Attributes:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;new_data&nbsp;(Any):&nbsp;new&nbsp;data&nbsp;to&nbsp;be&nbsp;used&nbsp;in&nbsp;updating&nbsp;the&nbsp;subscription&nbsp;query<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;pattern&nbsp;(passed&nbsp;along&nbsp;to&nbsp;_response_to_query).<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;pattern&nbsp;(passed&nbsp;along&nbsp;to&nbsp;response_to_query).<br>
 &nbsp;&nbsp;&nbsp;&nbsp;old_data&nbsp;(Any):&nbsp;copy&nbsp;of&nbsp;the&nbsp;new&nbsp;data&nbsp;after&nbsp;it&nbsp;has&nbsp;been&nbsp;retired,&nbsp;used<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;for&nbsp;only&nbsp;updating&nbsp;new&nbsp;if&nbsp;it&nbsp;differs&nbsp;from&nbsp;the&nbsp;last&nbsp;value.<br>
 &nbsp;&nbsp;&nbsp;&nbsp;subscribers&nbsp;(list):&nbsp;list&nbsp;of&nbsp;subscription&nbsp;messages&nbsp;to&nbsp;reply&nbsp;to&nbsp;when<br>
@@ -445,7 +519,7 @@ data),&nbsp;and&nbsp;if&nbsp;so&nbsp;set&nbsp;the&nbsp;new_data&nbsp;to&nbsp;the
 &nbsp;<br>
 Args:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;data&nbsp;(Any):&nbsp;new&nbsp;data&nbsp;to&nbsp;be&nbsp;used&nbsp;in&nbsp;updating&nbsp;the&nbsp;subscription&nbsp;query<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;pattern&nbsp;(passed&nbsp;along&nbsp;to&nbsp;_response_to_query)</tt></dd></dl>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;pattern&nbsp;(passed&nbsp;along&nbsp;to&nbsp;response_to_query)</tt></dd></dl>
 
 <hr>
 Data descriptors defined here:<br>

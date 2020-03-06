@@ -5,7 +5,7 @@
 # @Author:      Samuel Hill
 # @Date:        2020-02-10 16:10:26
 # @Last Modified by:   Samuel Hill
-# @Last Modified time: 2020-03-02 16:02:12
+# @Last Modified time: 2020-03-05 17:13:09
 
 """Pythonian agent, sits on top of the modified KQMLModule -
 CompanionsKQMLModule. Uses subscription management classes to allow for cleaner
@@ -60,7 +60,7 @@ class Pythonian(CompanionsKQMLModule):
         self.asks = {}
         self.subscriptions = SubscriptionManager()
         self.polling_interval = 1
-        self.poller = Thread(target=self._poll_for_subscription_updates,
+        self.poller = Thread(target=self.poll_for_subscription_updates,
                              args=[])
         LOGGER.info('Starting subcription poller...')
         self.poller.start()
@@ -117,7 +117,7 @@ class Pythonian(CompanionsKQMLModule):
         (car) is then used to find the function bound to the ask predicate, and
         that function is called with the bounded argument list unpacked into
         it's own inputs. The resulting query is then passed along to the
-        _response_to_query helper which will properly respond to patterns or
+        response_to_query helper which will properly respond to patterns or
         bindings based on out response type.
 
         Arguments:
@@ -154,7 +154,7 @@ class Pythonian(CompanionsKQMLModule):
             self.error_reply(msg, error_msg)
             return
         LOGGER.debug('Ask-one returned results: %s', results)
-        self._response_to_query(msg, content, results, msg.get('response'))
+        self.response_to_query(msg, content, results, msg.get('response'))
 
     ###########################################################################
     #                            Achieve Functions                            #
@@ -360,7 +360,7 @@ class Pythonian(CompanionsKQMLModule):
         reply_msg = f'(tell :sender {self.name} :content :ok)'
         self.reply(msg, performative(reply_msg))
 
-    def _poll_for_subscription_updates(self):
+    def poll_for_subscription_updates(self):
         """Goes through the subscription updates as they come in and properly
         respond to the query."""
         while self.ready:
@@ -370,11 +370,21 @@ class Pythonian(CompanionsKQMLModule):
                     for subscriber in subscription:
                         ask = subscriber.get('content')
                         query = ask.get('content')
-                        self._response_to_query(subscriber, query,
-                                                subscription.new_data,
-                                                ask.get('response'))
+                        self.response_to_query(subscriber, query,
+                                               subscription.new_data,
+                                               ask.get('response'))
                     subscription.retire_data()
             sleep(self.polling_interval)
+
+    def exit(self, n: int = 0):
+        """Override of companionsKQMLModule exit, calls super().exit(n) and
+        then joins the polling Thread.
+
+        Args:
+            n (int, optional): the value to pass along to sys.exit
+        """
+        super().exit(n)
+        self.poller.join()
 
     ###########################################################################
     #                             Insert Functions                            #
@@ -475,7 +485,7 @@ class Subscription():
 
     Attributes:
         new_data (Any): new data to be used in updating the subscription query
-            pattern (passed along to _response_to_query).
+            pattern (passed along to response_to_query).
         old_data (Any): copy of the new data after it has been retired, used
             for only updating new if it differs from the last value.
         subscribers (list): list of subscription messages to reply to when
@@ -513,7 +523,7 @@ class Subscription():
 
         Args:
             data (Any): new data to be used in updating the subscription query
-                pattern (passed along to _response_to_query)
+                pattern (passed along to response_to_query)
         """
         if self.old_data != data:
             self.new_data = data

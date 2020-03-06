@@ -21,11 +21,12 @@ If you want Companion to have access to some functionality in python, you can cr
 To create a new Pythonian agent, you will create a python class that extends Pythonian. In this class, you will implement the desired functionality via adding asks, achieves, or subscription patterns in the `__init__` method. The asks and achieves require functions to either use for responding to an ask or achieve on, and normally these functions are also defined inside the class, but these functions can technically come from anywhere so long as they are callable. The only other times you must put code inside the class is when you want to generally use the kqml message sending capabilities. For an indepth example check of the [test/test_agent.py code](https://github.com/SamuelHill/companionsKQML/blob/master/test/test_agent.py). The basic setup is:
 
 ```python3
-class CustomAgent(Pythonian):
-    name = "CustomAgent"
+class CustomPythonianAgent(Pythonian):
+    name = "CustomPythonianAgent"
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
+        # your setup code here...
 ```
 
 To instantiate the agent when calling this module, there is a convenience function you can use to allow for command line arguments to specify a handful of parameters at runtime. As well as allowing for more flexible agents, the convenience function has a further nicety in that it will attempt to check for a running Companions agent on your system and, if found, can get the port it is hosted at automatically. This extra feature is also available through the `init_check_companions` constructor as we want the `__init__` method to remain simple for now. The command line argument function is called as follows:

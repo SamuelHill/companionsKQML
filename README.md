@@ -6,6 +6,8 @@ This page describes the new Pythonian agent architecture. For a history and some
 
 `python3 -m pip install companionsKQML`
 
+[See us on pypi](https://pypi.org/project/companionsKQML/)!
+
 ## System requirements
 
 1. Companions
@@ -16,9 +18,17 @@ This page describes the new Pythonian agent architecture. For a history and some
 
 If you want Companion to have access to some functionality in python, you can create a Pythonian agent to meet that need. Generally, it is suggested you make a new Pythonian agent and not arbitrarily add to an existing one. For example, if you want functionality from spacy, then it is suggested that you create a new spacy agent. An obvious exception to this is if an existing agent is strongly related to the new desired functionality and uses the same python modules.
 
-To create a new Pythonian agent, you will create a python class that extends Pythonian. In this class, you will implement the desired functionality via adding asks, achieves, or subscription patterns in the `__init__` method. The asks and achieves require functions to either use for responding to an ask or achieve on, and normally these functions are also defined inside the class, but these functions can technically come from anywhere so long as they are callable. The only other times you must put code inside the class is when you want to generally use the kqml message sending capabilities. For an indepth example check of the [test/test_agent.py code](https://github.com/SamuelHill/companionsKQML/blob/master/test/test_agent.py).
+To create a new Pythonian agent, you will create a python class that extends Pythonian. In this class, you will implement the desired functionality via adding asks, achieves, or subscription patterns in the `__init__` method. The asks and achieves require functions to either use for responding to an ask or achieve on, and normally these functions are also defined inside the class, but these functions can technically come from anywhere so long as they are callable. The only other times you must put code inside the class is when you want to generally use the kqml message sending capabilities. For an indepth example check of the [test/test_agent.py code](https://github.com/SamuelHill/companionsKQML/blob/master/test/test_agent.py). The basic setup is:
 
-To instantiate the agent when calling this module, there is a convenience function you can use to allow for command line arguments to specify a handful of parameters at runtime. As well as allowing for more flexible agents, the convenience function has a further nicety in that it will attempt to check for a running Companions agent on your system and, if found, can get the port it is hosted at automatically. This extra feature is only available through the convenience function as we want the `__init__` method to remain simple for now. The function is called as follows:
+```python3
+class CustomAgent(Pythonian):
+    name = "CustomAgent"
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+```
+
+To instantiate the agent when calling this module, there is a convenience function you can use to allow for command line arguments to specify a handful of parameters at runtime. As well as allowing for more flexible agents, the convenience function has a further nicety in that it will attempt to check for a running Companions agent on your system and, if found, can get the port it is hosted at automatically. This extra feature is also available through the `init_check_companions` constructor as we want the `__init__` method to remain simple for now. The command line argument function is called as follows:
 
 ```python3
 if __name__ == "__main__":
@@ -29,10 +39,19 @@ This function parses the sys.args list and passes the appropriate flagged values
 * -u (--url) followed by some string, url where Companions kqml server is hosted - corresponds to host kwarg (-h is taken by help)
 * -p (--port) followed by some int, port Companions kqml server is open on
 * -l (--listener_port) followed by some int, port pythonian kqml server is open on
-* -d (--debug) present stores true, whether or not to log debug messages
-* -v (--verify_port) present stores true, whether or not to verify the port number by checking the pid in the portnum.dat file (created by either running Companions locally or in an exe) against the pid found on the running process where the portnum.dat file was found. This again is only applicable to starting an agent using this function, and this verify is just a more stringent test on the port number for our extra search for Companions.
+* -d (--debug) present stores true - this overrides the default value in init, whether or not to log debug messages
+* -v (--verify_port) present stores true - this matches the default value in init_check_companions, whether or not to verify the port number by checking the pid in the portnum.dat file (created by either running Companions locally or in an exe) against the pid found on the running process where the portnum.dat file was found. This again is only applicable to starting an agent using this function, and this verify is just a more stringent test on the port number for our extra search for Companions.
 
-Alternatively, you can just create the agent through a normal init and use keyword arguments to specify a handful of parameters:
+To utilize the check for companions on its own without expecting command line args (any time you may want to benefit from detecting a running companion but are not running the agent you create as a module):
+
+```python3
+if __name__ == "__main__":
+    agent = CustomPythonianAgent.init_check_companions()
+```
+
+This function will take the exact same keyword arguments as the the `__init__` function below with the addition of a *verify_port* boolean that defaults to false. The verify_port keyword has the same function as the flag by the same name used in the `parse_command_line_args` function.
+
+Alternatively, you can just create the agent through a normal the `__init__` and use keyword arguments to specify a handful of parameters:
 
 ```python3
 if __name__ == "__main__":

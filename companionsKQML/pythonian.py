@@ -5,7 +5,7 @@
 # @Author:      Samuel Hill
 # @Date:        2020-02-10 16:10:26
 # @Last Modified by:   Samuel Hill
-# @Last Modified time: 2020-03-05 17:13:09
+# @Last Modified time: 2020-03-06 11:35:53
 
 """Pythonian agent, sits on top of the modified KQMLModule -
 CompanionsKQMLModule. Uses subscription management classes to allow for cleaner
@@ -162,6 +162,8 @@ class Pythonian(CompanionsKQMLModule):
 
     def achieve_on_agent(self, receiver: str, data: Any):
         """Sends a KQML achieve to the receiver with the data input as a list.
+        The data is passed through listify to assign it to the proper KQML
+        types so keep this in mind when passing alond the achieve.
 
         Arguments:
             receiver (str): name of the receiving agent
@@ -169,8 +171,6 @@ class Pythonian(CompanionsKQMLModule):
         """
         msg = performative(f'(achieve :sender {self.name} :receiver {receiver}'
                            f' :content {listify(data)})')
-        # TODO: Do we want to listify the data for an achieve or rely on
-        # proper formatting?
         self.send(msg)
 
     def add_achieve(self, func: Callable[..., Any], name: str = None):

@@ -5,7 +5,7 @@
 # @Author:      Samuel Hill
 # @Date:        2020-01-29 14:48:19
 # @Last Modified by:   Samuel Hill
-# @Last Modified time: 2020-03-05 20:56:26
+# @Last Modified time: 2020-03-06 11:32:10
 
 """CompanionsKQMLModule, Override of KQMLModule for creation of Companions
 agents. Adds a KQML socket server that is kept alive in a thread for
@@ -497,7 +497,8 @@ class ControlledCompanionsKQMLModule(CompanionsKQMLModule):
         companions_process (Popen): the running Companions exe
     """
 
-    def __init__(self, exe_path: str, exe_name: str,
+    # TODO: need default for exe_path
+    def __init__(self, exe_path: str, exe_name: str = COMPANIONS_EXES[0],
                  verify_port: bool = True, **kwargs):
         """Launches a companions exe and uses that for connecting to Companions
 
@@ -524,9 +525,42 @@ class ControlledCompanionsKQMLModule(CompanionsKQMLModule):
 
     @classmethod
     def parse_command_line_args(cls, argv: list = None):
-        # TODO: need a new parse_command_line_args OR need defaults for
-        # exe_path and name
-        pass
+        if not argv:
+            argv = system_argument_list
+        _, *args = argv  # ignore name of file...
+        parser = ArgumentParser(description='Run Pythonian agent.')
+        parser.add_argument('-p', '--port', type=valid_port,
+                            help='port companions kqml server is open on')
+        parser.add_argument('-l', '--listener_port', type=valid_port,
+                            help='port pythonian kqml server is open on')
+        parser.add_argument('-e', '--exe_path', type=str,
+                            help='path to the executable to be launched')
+        parser.add_argument('-n', '--exe_name', type=str,
+                            help='name of the executable to be launched')
+        parser.add_argument('-d', '--debug', action='store_true',
+                            help='whether or not to log debug messages')
+        parser.add_argument('-v', '--verify_port', action='store_true',
+                            help='whether or not to verify the port number by '
+                                 'checking the pid in the portnum.dat file '
+                                 '(created by either running companions '
+                                 'locally or in an exe) against the pid found '
+                                 'on the running process where the portnum.dat'
+                                 ' file was found')
+        args = parser.parse_args(args)
+        kwargs = {}
+        if args.port:
+            kwargs['port'] = args.port
+        if args.listener_port:
+            kwargs['listener_port'] = args.listener_port
+        if args.exe_path:
+            kwargs['exe_path'] = args.exe_path
+        if args.exe_name:
+            kwargs['exe_name'] = args.exe_name
+        if args.debug:
+            kwargs['debug'] = args.debug
+        if args.verify_port:
+            kwargs['verify_port'] = args.verify_port
+        return cls(**kwargs)
 
     def exit(self, n: int = 0):
         """Override of CompanionsKQMLModule, allows for a Companions process
@@ -535,11 +569,11 @@ class ControlledCompanionsKQMLModule(CompanionsKQMLModule):
         Args:
             n (int, optional): the value to pass along to sys.exit
         """
+        super().exit(n)
         if self.companions_process:
             LOGGER.info('Shutting down companions: %s',
                         self.companions_process)
             self.companions_process.terminate()
-        super().exit(n)
 
 
 ###############################################################################

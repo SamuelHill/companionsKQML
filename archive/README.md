@@ -4,7 +4,7 @@ The new Pythonian agent architecture is a upgrade from the previous Pythonian ag
 
 ## Reasoning for updates
 
-The new architecture takes portions of the pykqml framework (KQML python objects, read and dispatching on kqml messages, etc.) and re-architects the main KQMLModule which controls things like connecting to an agent and sending messages. The two main reasons for this changes are;
+The new architecture continues to take advantage of portions of the pykqml framework (KQML python objects, read and dispatching on kqml messages, etc.) while re-architecting the main KQMLModule which controls things like connecting to an agent and sending messages. The two main reasons for these changes are;
 1. To simplify how the KQML server was working (both in terms of sending and receiving) from the convoluted model built on *top* of KQMLModule,
 2. To pull out the pythonian agent code which has became obfuscated by the lower level controlling mechanisms.
 

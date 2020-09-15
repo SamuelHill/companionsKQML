@@ -343,8 +343,6 @@ Methods inherited from <a href="kqml.kqml_module.html#KQMLModule">kqml.kqml_modu
 
 <dl><dt><a name="CompanionsKQMLModule-send_with_continuation"><strong>send_with_continuation</strong></a>(self, msg, cont)</dt></dl>
 
-<dl><dt><a name="CompanionsKQMLModule-stop_waiting"><strong>stop_waiting</strong></a>(self)</dt></dl>
-
 <dl><dt><a name="CompanionsKQMLModule-subscribe_request"><strong>subscribe_request</strong></a>(self, req_type)</dt></dl>
 
 <dl><dt><a name="CompanionsKQMLModule-subscribe_tell"><strong>subscribe_tell</strong></a>(self, tell_type)</dt></dl>
@@ -628,8 +626,6 @@ Methods inherited from <a href="kqml.kqml_module.html#KQMLModule">kqml.kqml_modu
 
 <dl><dt><a name="ControlledCompanionsKQMLModule-send_with_continuation"><strong>send_with_continuation</strong></a>(self, msg, cont)</dt></dl>
 
-<dl><dt><a name="ControlledCompanionsKQMLModule-stop_waiting"><strong>stop_waiting</strong></a>(self)</dt></dl>
-
 <dl><dt><a name="ControlledCompanionsKQMLModule-subscribe_request"><strong>subscribe_request</strong></a>(self, req_type)</dt></dl>
 
 <dl><dt><a name="ControlledCompanionsKQMLModule-subscribe_tell"><strong>subscribe_tell</strong></a>(self, tell_type)</dt></dl>
@@ -680,6 +676,13 @@ Arguments:<br>
 &nbsp;<br>
 Returns:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;int</tt></dd></dl>
+ <dl><dt><a name="-full_remove_packaging"><strong>full_remove_packaging</strong></a>(perf:kqml.kqml_performative.KQMLPerformative)</dt><dd><tt>Take&nbsp;a&nbsp;performative&nbsp;and&nbsp;strip&nbsp;package&nbsp;info&nbsp;from&nbsp;it<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;perf&nbsp;(KQMLPerformative):&nbsp;performative&nbsp;to&nbsp;strip<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;KQMLPerformative:&nbsp;striped&nbsp;of&nbsp;package&nbsp;info</tt></dd></dl>
  <dl><dt><a name="-get_port"><strong>get_port</strong></a>(portnum_path:pathlib.Path, process_pid:int, verify:bool=False) -&gt; Union[int, NoneType]</dt><dd><tt>Gets&nbsp;the&nbsp;port&nbsp;number&nbsp;from&nbsp;the&nbsp;portnum.dat&nbsp;file&nbsp;as&nbsp;a&nbsp;dict.&nbsp;If&nbsp;verify&nbsp;is<br>
 true&nbsp;the&nbsp;port&nbsp;number&nbsp;is&nbsp;only&nbsp;returned&nbsp;if&nbsp;the&nbsp;pid&nbsp;in&nbsp;the&nbsp;portnum&nbsp;file&nbsp;is&nbsp;a<br>
 match&nbsp;with&nbsp;the&nbsp;process_pid&nbsp;passed&nbsp;in.<br>
@@ -732,10 +735,40 @@ Arguments:<br>
 &nbsp;<br>
 Returns:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;KQMLPerformative</tt></dd></dl>
+ <dl><dt><a name="-remove_packaging"><strong>remove_packaging</strong></a>(symbol:str)</dt><dd><tt>Remove&nbsp;package&nbsp;names&nbsp;from&nbsp;lisp&nbsp;such&nbsp;as&nbsp;common-lisp-user::<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;symbol&nbsp;(str):&nbsp;string&nbsp;to&nbsp;have&nbsp;package&nbsp;name&nbsp;striped<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;str:&nbsp;symbol&nbsp;input&nbsp;with&nbsp;package&nbsp;name&nbsp;removed&nbsp;(if&nbsp;present)</tt></dd></dl>
  <dl><dt><a name="-sleep"><strong>sleep</strong></a>(...)</dt><dd><tt><a href="#-sleep">sleep</a>(seconds)<br>
 &nbsp;<br>
 Delay&nbsp;execution&nbsp;for&nbsp;a&nbsp;given&nbsp;number&nbsp;of&nbsp;seconds.&nbsp;&nbsp;The&nbsp;argument&nbsp;may&nbsp;be<br>
 a&nbsp;floating&nbsp;point&nbsp;number&nbsp;for&nbsp;subsecond&nbsp;precision.</tt></dd></dl>
+ <dl><dt><a name="-test_bind_in_range"><strong>test_bind_in_range</strong></a>(sock:socket.socket, port:int, tries:int=0)</dt><dd><tt>Wrapper&nbsp;around&nbsp;socket&nbsp;binding&nbsp;that&nbsp;will&nbsp;try&nbsp;to&nbsp;bind&nbsp;to&nbsp;the&nbsp;given&nbsp;port,<br>
+catching&nbsp;any&nbsp;errors&nbsp;and&nbsp;trying&nbsp;again&nbsp;at&nbsp;one&nbsp;plus&nbsp;that&nbsp;port,&nbsp;up&nbsp;to&nbsp;the<br>
+number&nbsp;of&nbsp;times&nbsp;defined&nbsp;in&nbsp;the&nbsp;variable&nbsp;LISTENER_PORT_RANGE.<br>
+&nbsp;<br>
+Helps&nbsp;to&nbsp;eliminate&nbsp;the&nbsp;need&nbsp;for&nbsp;setting&nbsp;listener&nbsp;port&nbsp;for&nbsp;multiple&nbsp;agents,<br>
+or&nbsp;in&nbsp;situations&nbsp;where&nbsp;one&nbsp;of&nbsp;the&nbsp;ports&nbsp;in&nbsp;the&nbsp;default&nbsp;range&nbsp;is&nbsp;used.<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;sock&nbsp;(socket):&nbsp;socket&nbsp;to&nbsp;be&nbsp;bound<br>
+&nbsp;&nbsp;&nbsp;&nbsp;port&nbsp;(int):&nbsp;start&nbsp;of&nbsp;range&nbsp;of&nbsp;ports&nbsp;to&nbsp;trying&nbsp;binding&nbsp;socket&nbsp;to<br>
+&nbsp;&nbsp;&nbsp;&nbsp;tries&nbsp;(int,&nbsp;optional):&nbsp;position&nbsp;in&nbsp;the&nbsp;range&nbsp;of&nbsp;ports&nbsp;-&nbsp;ie&nbsp;number&nbsp;of<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;tries<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;None:&nbsp;Always&nbsp;returns&nbsp;None</tt></dd></dl>
+ <dl><dt><a name="-test_sock_name"><strong>test_sock_name</strong></a>(sock:socket.socket)</dt><dd><tt>Basic&nbsp;check&nbsp;for&nbsp;a&nbsp;port&nbsp;by&nbsp;calling&nbsp;get&nbsp;sock&nbsp;name&nbsp;with&nbsp;try&nbsp;wrapper&nbsp;for<br>
+unbound&nbsp;sockets.<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;sock&nbsp;(socket):&nbsp;Socket&nbsp;to&nbsp;test&nbsp;for&nbsp;a&nbsp;bind&nbsp;on<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Bool,&nbsp;int:&nbsp;False&nbsp;if&nbsp;getting&nbsp;the&nbsp;port&nbsp;fails,&nbsp;otherwise&nbsp;the&nbsp;port</tt></dd></dl>
  <dl><dt><a name="-valid_ip"><strong>valid_ip</strong></a>(string:str) -&gt; str</dt><dd><tt>argparse&nbsp;type&nbsp;checking&nbsp;function&nbsp;for&nbsp;ip&nbsp;addresses.&nbsp;Valid&nbsp;if&nbsp;the&nbsp;ip<br>
 address&nbsp;is&nbsp;either&nbsp;localhost&nbsp;or&nbsp;meets&nbsp;either&nbsp;of&nbsp;the&nbsp;ip4&nbsp;or&nbsp;ip6&nbsp;standards.<br>
 &nbsp;<br>
@@ -772,6 +805,7 @@ Raises:<br>
 <strong>DEBUG</strong> = 10<br>
 <strong>INFO</strong> = 20<br>
 <strong>KQMLType</strong> = ~KQML_TYPE<br>
+<strong>LISTENER_PORT_RANGE</strong> = 50<br>
 <strong>LOCALHOST</strong> = 'localhost'<br>
 <strong>LOCALHOST_DEFS</strong> = ['localhost', '127.0.0.1', '::1']<br>
 <strong>LOGGER</strong> = &lt;Logger companionsKQML.companionsKQMLModule (INFO)&gt;<br>
@@ -780,5 +814,6 @@ Raises:<br>
 <strong>SHUT_RDWR</strong> = 2<br>
 <strong>SOL_SOCKET</strong> = 65535<br>
 <strong>SO_REUSEADDR</strong> = 4<br>
-<strong>system_argument_list</strong> = [r'C:\Users\Samuel Hill\AppData\Local\Programs\Python\Python36-32\lib\pydoc.py', '-w', 'companionsKQML.companionsKQMLModule']</td></tr></table>
+<strong>WARNING</strong> = 30<br>
+<strong>system_argument_list</strong> = [r'C:\Users\Sam Hill\AppData\Local\Programs\Python\Python36\lib\pydoc.py', '-w', 'companionsKQML.companionsKQMLModule']</td></tr></table>
 </body></html>

@@ -14,6 +14,10 @@ This page describes the new Pythonian agent architecture. For a history and some
 2. Python >= 3.6 (may work for some other 3.x versions, currently being tested in 3.6.5)
 3. pip (to install this package and all dependencies)
 
+## FAQ
+
+See the [FAQ](https://github.com/SamuelHill/companionsKQML/blob/master/FAQ.md)!
+
 ## Making a Pythonian agent
 
 If you want Companion to have access to some functionality in python, you can create a Pythonian agent to meet that need. Generally, it is suggested you make a new Pythonian agent and not arbitrarily add to an existing one. For example, if you want functionality from spacy, then it is suggested that you create a new spacy agent. An obvious exception to this is if an existing agent is strongly related to the new desired functionality and uses the same python modules.

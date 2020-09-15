@@ -4,8 +4,8 @@
 # @Filename:    companionsKQMLModule.py
 # @Author:      Samuel Hill
 # @Date:        2020-01-29 14:48:19
-# @Last Modified by:   Samuel Hill
-# @Last Modified time: 2020-03-06 11:32:10
+# @Last Modified by:    Samuel Hill
+# @Last Modified time:  2020-09-15 06:55:09
 
 """CompanionsKQMLModule, Override of KQMLModule for creation of Companions
 agents. Adds a KQML socket server that is kept alive in a thread for
@@ -28,7 +28,7 @@ from datetime import datetime
 from io import BufferedReader, BufferedWriter
 from ipaddress import ip_address
 from json import loads as load_dict
-from logging import getLogger, DEBUG, INFO
+from logging import getLogger, DEBUG, INFO, WARNING
 from pathlib import Path
 from socket import socket, SocketIO, gethostname, SOL_SOCKET, SO_REUSEADDR, \
      SHUT_RDWR
@@ -43,9 +43,12 @@ from kqml import KQMLModule, KQMLReader, KQMLPerformative, KQMLList, \
      KQMLDispatcher, KQMLToken, KQMLString
 from psutil import disk_partitions, process_iter
 
+getLogger(KQMLDispatcher.__name__).setLevel(WARNING)
+
 PORTNUM = 'portnum.dat'
 LOCALHOST = 'localhost'
 LOCALHOST_DEFS = [LOCALHOST, '127.0.0.1', '::1']
+LISTENER_PORT_RANGE = 50
 COMPANIONS_EXES = ['CompanionsMicroServer64.exe', 'CompanionsServer64.exe']
 KQMLType = TypeVar('KQML_TYPE', KQMLList, KQMLToken, KQMLString)
 
@@ -132,7 +135,8 @@ class CompanionsKQMLModule(KQMLModule):
         self.dispatcher = None
         self.listen_socket = socket()
         self.listen_socket.setsockopt(SOL_SOCKET, SO_REUSEADDR, 1)
-        self.listen_socket.bind(('', self.listener_port))
+        test_bind_in_range(self.listen_socket, self.listener_port)
+        self.listener_port = self.listen_socket.getsockname()[1]
         self.listen_socket.listen(10)
         self.local_out = None
         self.ready = True
@@ -150,7 +154,8 @@ class CompanionsKQMLModule(KQMLModule):
         else:
             LOGGER.setLevel(INFO)
         # REGISTER AND START LISTENING
-        LOGGER.info('Starting listener (KQML socket server)...')
+        LOGGER.info('Starting listener (KQML socket server) on port %s...',
+                    self.listener_port)
         self.listener.start()
         self.register()
 
@@ -266,7 +271,7 @@ class CompanionsKQMLModule(KQMLModule):
             socket_write = SocketIO(self.send_socket, 'w')
             self.out = BufferedWriter(socket_write)
         except OSError as error_msg:
-            LOGGER.error('Connection failed: %s', error_msg)
+            LOGGER.critical('Connection failed: %s', error_msg)
         # Verify that you can send messages...
         assert self.out is not None, \
             'Connection formed but output (%s) not set.' % (self.out)
@@ -390,7 +395,7 @@ class CompanionsKQMLModule(KQMLModule):
 
     def register(self):
         """Override of KQMLModule, registers this agent with Companions"""
-        LOGGER.info('Registering...')
+        LOGGER.info('Registering to facilitator at port %s...', self.port)
         registration = (
             f'(register :sender {self.name} :receiver facilitator :content '
             f'("socket://{self.host}:{self.listener_port}" nil nil '
@@ -406,8 +411,9 @@ class CompanionsKQMLModule(KQMLModule):
             msg (KQMLPerformative): other type of performative, if ping we
                 reply with a ping update otherwise error
         """
+        msg = full_remove_packaging(msg)
         if msg.head() == 'ping':
-            LOGGER.info('Receive ping... %s', msg)
+            LOGGER.debug('Receive ping... %s', msg)
             reply_content = (
                 f'(update :sender {self.name} :content (:agent {self.name} '
                 f':uptime {self.uptime()} :status :OK :state {self.state} '
@@ -822,3 +828,77 @@ def get_port(portnum_path: Path, process_pid: int,
             assert process_pid == port_dict['pid']
         return port_dict['port']
     return None
+
+
+def test_bind_in_range(sock: socket, port: int, tries: int = 0):
+    """Wrapper around socket binding that will try to bind to the given port,
+    catching any errors and trying again at one plus that port, up to the
+    number of times defined in the variable LISTENER_PORT_RANGE.
+
+    Helps to eliminate the need for setting listener port for multiple agents,
+    or in situations where one of the ports in the default range is used.
+
+    Args:
+        sock (socket): socket to be bound
+        port (int): start of range of ports to trying binding socket to
+        tries (int, optional): position in the range of ports - ie number of
+            tries
+
+    Returns:
+        None: Always returns None
+    """
+    if tries > LISTENER_PORT_RANGE:
+        orig_port = port - (LISTENER_PORT_RANGE + 1)
+        assert test_sock_name(sock), \
+            'Failed to bind to a port from %s to %s' % (orig_port, port - 1)
+        return
+    try:
+        sock.bind(('', port))
+    except OSError as error_msg:
+        LOGGER.debug('Failed to bind to port %s, error: %s, trying again...',
+                     port, error_msg)
+        test_bind_in_range(sock, port + 1, tries + 1)
+
+
+def test_sock_name(sock: socket):
+    """Basic check for a port by calling get sock name with try wrapper for
+    unbound sockets.
+
+    Args:
+        sock (socket): Socket to test for a bind on
+
+    Returns:
+        Bool, int: False if getting the port fails, otherwise the port
+    """
+    try:
+        port = sock.getsockname()[1]
+    except OSError:
+        return False
+    return port
+
+
+def remove_packaging(symbol: str):
+    """Remove package names from lisp such as common-lisp-user::
+
+    Args:
+        symbol (str): string to have package name striped
+
+    Returns:
+        str: symbol input with package name removed (if present)
+    """
+    split_symbol = symbol.split('::')
+    return symbol if len(split_symbol) == 1 else split_symbol[1]
+
+
+def full_remove_packaging(perf: KQMLPerformative):
+    """Take a performative and strip package info from it
+
+    Args:
+        perf (KQMLPerformative): performative to strip
+
+    Returns:
+        KQMLPerformative: striped of package info
+    """
+    filter_list = [remove_packaging(s) for s in perf.to_string().split()]
+    temp_perf = ' '.join(filter_list)
+    return performative('(' + temp_perf if temp_perf[0] != '(' else temp_perf)

@@ -8,5 +8,7 @@ python3 -m pydoc -w companionsKQML
 python3 -m pydoc -w companionsKQML.companionsKQMLModule
 python3 -m pydoc -w companionsKQML.pythonian
 mv *.html docs
+# OR FOR WINDOWS:
+move *.html docs
 ```
 To explore the documentation on your own machine, simply open any of the files in a browser (they are all linked together). Alternatively, if you want a live browser to look over the objects and functions offered by this package call `python3 -m pydoc -b companionsKQML`.

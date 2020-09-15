@@ -4,8 +4,8 @@
 # @Filename:    test_agent.py
 # @Author:      Samuel Hill
 # @Date:        2020-02-10 15:39:38
-# @Last Modified by:   Samuel Hill
-# @Last Modified time: 2020-02-13 15:35:35
+# @Last Modified by:    Samuel Hill
+# @Last Modified time:  2020-09-15 06:59:03
 
 """Simple example file for how to use Pythonian, and a test file to explore all
 of the functionality Pythonian (and it's helpers) provide
@@ -32,7 +32,6 @@ class TestAgent(Pythonian):
     name = "TestAgent"
 
     def __init__(self, **kwargs):
-        kwargs['debug'] = True  # you don't need this line in your agents
         super().__init__(**kwargs)
         if self.debug:
             LOGGER.setLevel(DEBUG)
@@ -67,7 +66,7 @@ class TestAgent(Pythonian):
             list: passes the input back along as a list to check the full input
                 /output cycle in companions
         """
-        LOGGER.debug('testing ask with _input %s', _input)
+        LOGGER.info('testing ask with _input %s', _input)
         return [_input]
 
     @staticmethod
@@ -81,7 +80,7 @@ class TestAgent(Pythonian):
             list: passes the strings pass and test as a list to check the full
                 input/output cycle in companions
         """
-        LOGGER.debug('testing ask with _input %s', _input)
+        LOGGER.info('testing ask with _input %s', _input)
         return ["pass", "test"]
 
     @staticmethod
@@ -95,7 +94,7 @@ class TestAgent(Pythonian):
             list: passes the string pass to check the full input /output cycle
                 in companions
         """
-        LOGGER.debug('testing ask with _input %s', _input)
+        LOGGER.info('testing ask with _input %s', _input)
         return "pass"
 
     @staticmethod
@@ -109,7 +108,7 @@ class TestAgent(Pythonian):
             list: passes the string pass to check the full input /output cycle
                 in companions
         """
-        LOGGER.debug('testing ask with _input %s', _input)
+        LOGGER.info('testing ask with _input %s', _input)
         return 1
 
     @staticmethod
@@ -123,7 +122,7 @@ class TestAgent(Pythonian):
             list: passes a populated dictionary to check the full input/output
                 cycle in companions
         """
-        LOGGER.debug('testing ask with _input %s', _input)
+        LOGGER.info('testing ask with _input %s', _input)
         return {'key1': ['a', 'b'], 'key2': 'c'}
 
     @staticmethod
@@ -133,7 +132,7 @@ class TestAgent(Pythonian):
         Args:
             _input (Any): input to be passed to this function from companions
         """
-        LOGGER.debug('testing achieve with _input %s', _input)
+        LOGGER.info('testing achieve with _input %s', _input)
 
     @staticmethod
     def test_achieve_return(_input: Any):
@@ -145,7 +144,7 @@ class TestAgent(Pythonian):
         Returns:
             1, always a 1 for testing purposes
         """
-        LOGGER.debug('testing achieve with _input %s', _input)
+        LOGGER.info('testing achieve with _input %s', _input)
         return 1
 
     @staticmethod
@@ -158,9 +157,9 @@ class TestAgent(Pythonian):
         Returns:
             bool: _input from companions converted to a boolean
         """
-        LOGGER.debug('testing achieve with _input %s', to_be_bool)
+        LOGGER.info('testing achieve with _input %s', to_be_bool)
         now_bool = convert_to_boolean(to_be_bool)
-        LOGGER.debug('boolean conversion new value is %s', now_bool)
+        LOGGER.info('boolean conversion new value is %s', now_bool)
         return now_bool
 
     @staticmethod
@@ -173,9 +172,9 @@ class TestAgent(Pythonian):
         Returns:
             int: _input from companions converted to a int
         """
-        LOGGER.debug('testing achieve with _input %s', to_be_int)
+        LOGGER.info('testing achieve with _input %s', to_be_int)
         now_int = convert_to_int(to_be_int)
-        LOGGER.debug('int conversion new value is %s', now_int)
+        LOGGER.info('int conversion new value is %s', now_int)
         return now_int
 
     def more_junk_mail(self, data: Any):
@@ -185,7 +184,7 @@ class TestAgent(Pythonian):
             data (Any): content of the junk mail to update the subscription
                 with
         """
-        LOGGER.debug('more junk mail has arrived %s', data)
+        LOGGER.info('more junk mail has arrived %s', data)
         self.update_subscription('(test_junk_mail ?x)', data)
 
     def test_insert_to_companion(self, data: Any):
@@ -194,15 +193,19 @@ class TestAgent(Pythonian):
         Args:
             data (Any): fact to be inserted
         """
-        LOGGER.debug('testing inserting data into Companion %s', data)
+        LOGGER.info('testing inserting data into Companion %s', data)
         self.insert_data(self, 'session-reasoner', data)
 
 
 if __name__ == "__main__":
     AGENT = TestAgent.parse_command_line_args()
+
+    # UNCOMMENT TO TEST INSERTS:
     # AGENT.test_insert_to_companion('(started TestAgent)')
-    sleep(20)
-    AGENT.more_junk_mail('Click here for...')
-    sleep(10)
-    AGENT.more_junk_mail('You have won! Just send your SSN to us and we will '
-                         'send you the money')
+
+    # UNCOMMENT TO TEST SUBSCRIPTIONS:
+    # sleep(20)
+    # AGENT.more_junk_mail('Click here for...')
+    # sleep(10)
+    # AGENT.more_junk_mail('You have won! Just send your SSN to us and we '
+    #                      'will send you the money')

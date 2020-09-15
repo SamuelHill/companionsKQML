@@ -4,8 +4,8 @@
 # @Filename:    pythonian.py
 # @Author:      Samuel Hill
 # @Date:        2020-02-10 16:10:26
-# @Last Modified by:   Samuel Hill
-# @Last Modified time: 2020-03-06 11:35:53
+# @Last Modified by:    Samuel Hill
+# @Last Modified time:  2020-09-11 05:00:08
 
 """Pythonian agent, sits on top of the modified KQMLModule -
 CompanionsKQMLModule. Uses subscription management classes to allow for cleaner
@@ -82,7 +82,7 @@ class Pythonian(CompanionsKQMLModule):
             msg (KQMLPerformative): overall message to be passed along in reply
             content (KQMLList): tell content from companions to be logged
         """
-        LOGGER.debug('received tell: %s', content)
+        LOGGER.info('received tell: %s', content)
         reply_msg = performative(f'(tell :sender {self.name} :content :ok)')
         self.reply(msg, reply_msg)
 
@@ -130,7 +130,7 @@ class Pythonian(CompanionsKQMLModule):
         """
         if content.head() not in self.asks:
             error_msg = f'No ask query predicate named {content.head()} known'
-            LOGGER.debug(error_msg)
+            LOGGER.warning(error_msg)
             self.error_reply(msg, error_msg)
             return
         bounded = []
@@ -142,14 +142,14 @@ class Pythonian(CompanionsKQMLModule):
         if expected_args != len(bounded):
             error_msg = (f'Expected {expected_args} input arguments to query '
                          f'predicate {content.head()}, got {len(bounded)}')
-            LOGGER.debug(error_msg)
+            LOGGER.warning(error_msg)
             self.error_reply(msg, error_msg)
             return
         LOGGER.info('received ask-one %s', content.head())
         try:
             results = self.asks[content.head()](*bounded)
         except (TypeError, ValueError) as except_msg:
-            LOGGER.debug('Failed execution: %s, %s', except_msg, print_exc())
+            LOGGER.warning('Failed execution: %s, %s', except_msg, print_exc())
             error_msg = f'An error occurred while executing: {content.head()}'
             self.error_reply(msg, error_msg)
             return
@@ -210,18 +210,18 @@ class Pythonian(CompanionsKQMLModule):
         if content.head() != 'task':
             error_msg = (f'Only support achieve command of task, instead got '
                          f'{content.head()}')
-            LOGGER.debug(error_msg)
+            LOGGER.warning(error_msg)
             self.error_reply(msg, error_msg)
             return
         action = content.get('action')
         if not action:
             error_msg = 'No action for achieve task provided'
-            LOGGER.debug(error_msg)
+            LOGGER.warning(error_msg)
             self.error_reply(msg, error_msg)
             return
         if action.head() not in self.achieves:
             error_msg = f'No action named {action.head()} is known'
-            LOGGER.debug(error_msg)
+            LOGGER.warning(error_msg)
             self.error_reply(msg, error_msg)
             return
         achieve_question = self.achieves[action.head()]
@@ -230,14 +230,14 @@ class Pythonian(CompanionsKQMLModule):
         if expected_args != len(actual_args):
             error_msg = (f'Expected {expected_args} input arguments to achieve'
                          f' task {action.head()}, got {len(actual_args)}')
-            LOGGER.debug(error_msg)
+            LOGGER.warning(error_msg)
             self.error_reply(msg, error_msg)
             return
         LOGGER.info('received achieve %s', action.head())
         try:
             results = self.achieves[action.head()](*actual_args)
         except (TypeError, ValueError) as except_msg:
-            LOGGER.debug('Failed execution: %s, %s', except_msg, print_exc())
+            LOGGER.warning('Failed execution: %s, %s', except_msg, print_exc())
             error_msg = f'An error occurred while executing {action.head()}'
             self.error_reply(msg, error_msg)
             return
@@ -340,19 +340,19 @@ class Pythonian(CompanionsKQMLModule):
         if content.head() != 'ask-all':
             error_msg = (f'Only supports ask-all subscription, received '
                          f'unsupported performative {content.head()}')
-            LOGGER.debug(error_msg)
+            LOGGER.warning(error_msg)
             self.error_reply(msg, error_msg)
             return
         query = content.get('content')
         pattern = query.to_string()
         if query.head() not in self.asks:
             error_msg = f'No ask named {query.head()} is known'
-            LOGGER.debug(error_msg)
+            LOGGER.warning(error_msg)
             self.error_reply(msg, error_msg)
             return
         if pattern not in self.subscriptions:
             error_msg = f'Ask ({query.head()}) is not subscribable'
-            LOGGER.debug(error_msg)
+            LOGGER.warning(error_msg)
             self.error_reply(msg, error_msg)
             return
         LOGGER.info('received subscription %s to %s', msg, pattern)
@@ -366,7 +366,7 @@ class Pythonian(CompanionsKQMLModule):
         while self.ready:
             for _, subscription in self.subscriptions.items():
                 if subscription.new_data is not None:
-                    LOGGER.info('updating subscriptions for %s', subscription)
+                    LOGGER.debug('updating subscriptions for %s', subscription)
                     for subscriber in subscription:
                         ask = subscriber.get('content')
                         query = ask.get('content')

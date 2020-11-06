@@ -29,3 +29,5 @@ python3 test_agent.py
     (agents::send *facilitator* 'TestAgent '(achieve :content (task :action (test_achieve_return nil))))
     ```
     To verify that Companions is receiving a reply from this, you should see a nil printed out in the listener soon after executing the above command.
+
+To test the insert or subscription mechanisms, uncomment those sections from the bottom of your test file. To verify an insert worked browse the kb for the inserted fact. For more on testing subscriptions see the [subscribe section on the main README.md](https://github.com/SamuelHill/companionsKQML#subscribe).

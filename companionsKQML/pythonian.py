@@ -5,7 +5,7 @@
 # @Author:      Samuel Hill
 # @Date:        2020-02-10 16:10:26
 # @Last Modified by:    Samuel Hill
-# @Last Modified time:  2020-09-11 05:00:08
+# @Last Modified time:  2020-11-05 18:41:31
 
 """Pythonian agent, sits on top of the modified KQMLModule -
 CompanionsKQMLModule. Uses subscription management classes to allow for cleaner
@@ -83,6 +83,7 @@ class Pythonian(CompanionsKQMLModule):
             content (KQMLList): tell content from companions to be logged
         """
         LOGGER.info('received tell: %s', content)
+        # TODO: fix timeout reply and remove the tell ok response.
         reply_msg = performative(f'(tell :sender {self.name} :content :ok)')
         self.reply(msg, reply_msg)
 
@@ -138,6 +139,7 @@ class Pythonian(CompanionsKQMLModule):
             if str(each[0]) != '?':
                 bounded.append(each)
         ask_question = self.asks[content.head()]
+        # TODO - same argument structure issue as achieve, won't work with self
         expected_args = len(getfullargspec(ask_question).args)
         if expected_args != len(bounded):
             error_msg = (f'Expected {expected_args} input arguments to query '
@@ -160,6 +162,9 @@ class Pythonian(CompanionsKQMLModule):
     #                            Achieve Functions                            #
     ###########################################################################
 
+    # This is a bad name, should be changed to send_acheive_to_receiver or
+    # something more descriptive of what it does in comparison to add_achieve
+    # and receive_achieve respectively.
     def achieve_on_agent(self, receiver: str, data: Any):
         """Sends a KQML achieve to the receiver with the data input as a list.
         The data is passed through listify to assign it to the proper KQML
@@ -225,7 +230,17 @@ class Pythonian(CompanionsKQMLModule):
             self.error_reply(msg, error_msg)
             return
         achieve_question = self.achieves[action.head()]
-        expected_args = len(getfullargspec(achieve_question).args)
+        # TODO - argument structure and call won't work if the self argument
+        # is needed. Easy enough to filter out the arguments but it will be
+        # harder to use self if that self argument doesn't correlate to a
+        # pythonian object... ie if someone passes in a function that is from
+        # inside another class.
+        question_args = getfullargspec(achieve_question).args
+        # call_needs_self = False
+        # if question_args[0] is 'self':
+        #     question_args = question_args[1:]
+        #     call_needs_self = True
+        expected_args = len(question_args)
         actual_args = action.data[1:]
         if expected_args != len(actual_args):
             error_msg = (f'Expected {expected_args} input arguments to achieve'
@@ -390,13 +405,13 @@ class Pythonian(CompanionsKQMLModule):
     #                             Insert Functions                            #
     ###########################################################################
 
-    def insert_data(self, receiver: str, data: Any, wm_only: bool = False):
+    def insert_data(self, receiver: str, data: str, wm_only: bool = False):
         """Takes the data input by the user and processes it into an insert
         message which is subsequently sent off to Companions.
 
         Arguments:
             receiver (str): name of the receiver (agent with a kb to insert to)
-            data (Any): fact to insert (data to be listify'd)
+            data (str): fact to insert
             wm_only (bool, optional): whether or not this should only be
                 inserted into the working memory (default: False)
         """
@@ -405,13 +420,13 @@ class Pythonian(CompanionsKQMLModule):
                            f'{data})')
         self.send(msg)
 
-    def insert_to_microtheory(self, receiver: str, data: Any, mt_name: str,
+    def insert_to_microtheory(self, receiver: str, data: str, mt_name: str,
                               wm_only: bool = False):
         """Inserts a fact into the given microtheory using ist-Information
 
         Arguments:
             receiver (str): name of the receiver (agent with a kb to insert to)
-            data (Any): fact to insert
+            data (str): fact to insert
             mt_name (str): microtheory name
             wm_only (bool, optional): whether or not this should only be
                 inserted into the working memory (default: False)
@@ -426,7 +441,7 @@ class Pythonian(CompanionsKQMLModule):
         Arguments:
             receiver (str): name of the receiver (agent with a kb to insert to)
             data_list (list): list of facts to insert (list with each elemenet
-                having data to be listify'd)
+                being a string of the fact to insert in KQML form)
             mt_name (str): microtheory name
             wm_only (bool, optional): whether or not this should only be
                 inserted into the working memory (default: False)

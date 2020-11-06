@@ -5,7 +5,7 @@
 # @Author:      Samuel Hill
 # @Date:        2020-02-10 15:39:38
 # @Last Modified by:    Samuel Hill
-# @Last Modified time:  2020-09-15 06:59:03
+# @Last Modified time:  2020-11-02 15:43:35
 
 """Simple example file for how to use Pythonian, and a test file to explore all
 of the functionality Pythonian (and it's helpers) provide
@@ -194,7 +194,7 @@ class TestAgent(Pythonian):
             data (Any): fact to be inserted
         """
         LOGGER.info('testing inserting data into Companion %s', data)
-        self.insert_data(self, 'session-reasoner', data)
+        self.insert_data('session-reasoner', data)
 
 
 if __name__ == "__main__":

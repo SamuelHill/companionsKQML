@@ -5,7 +5,7 @@
 # @Author:      Samuel Hill
 # @Date:        2020-01-29 14:48:19
 # @Last Modified by:    Samuel Hill
-# @Last Modified time:  2020-09-15 06:55:09
+# @Last Modified time:  2020-11-05 18:37:56
 
 """CompanionsKQMLModule, Override of KQMLModule for creation of Companions
 agents. Adds a KQML socket server that is kept alive in a thread for
@@ -203,7 +203,7 @@ class CompanionsKQMLModule(KQMLModule):
             cls: instantiated cls object
         """
         kwargs = {}  # repack arguments for a non-default interrupting call
-        if host:
+        if host:  # ignore values of None as they are added by parse cmd line
             kwargs['host'] = host
         if port:
             kwargs['port'] = port
@@ -519,7 +519,7 @@ class ControlledCompanionsKQMLModule(CompanionsKQMLModule):
         exe_path = Path(exe_path)
         portnum_path = exe_path / PORTNUM
         exe_location = exe_path / exe_name
-        if portnum_path.exists():  # not needed in Python 3.8
+        if portnum_path.exists():  # not needed in Python 3.8,
             portnum_path.unlink()  # missing_ok key handles nonexistant files
         self.companions_process = Popen(str(exe_location))
         LOGGER.info('Launched companions: %s', self.companions_process)
@@ -641,7 +641,7 @@ def listify(possible_list: Any) -> KQMLType:
 
 def performative(string: str) -> KQMLPerformative:
     """Wrapper for KQMLPerformative.from_string, produces a performative object
-    from a KQML string
+    from a KQML formatted string
 
     Arguments:
         string (str): well formed KQML performative as a string
@@ -784,10 +784,13 @@ def check_for_companions(verify: bool = False) -> Optional[int]:
     potential_roots.append(Path.home())
     for root in potential_roots:
         qrg = root / 'qrg'
+        try:  # Need to test incase there is a non-existent drive on Windows
+            qrg.exists()  # this could be drives with no partition or cd drives
+        except PermissionError:  # https://bugs.python.org/issue35692
+            continue  # Not needed in versions 3.7/3.8....
         if qrg.exists():
             qrg_root = qrg
             break
-    # allegro = _find_named_process('allegro.exe', processes)
     allegro = next((p.info for p in processes
                     if 'allegro.exe' in p.info['name']), None)
     if qrg_root and allegro:

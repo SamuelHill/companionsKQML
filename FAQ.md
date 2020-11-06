@@ -1,5 +1,9 @@
 # FAQ
 
+### Creating KQML messages?
+
+See the performative and listify sections of the main [README.md](https://github.com/SamuelHill/companionsKQML/blob/master/README.md#listify).
+
 ### Listener port vs port?
 
 Essentially we need one socket to send messages to companions over (to the facilitator) and another to receive message from companions on. There might be ways to get around this using the addressing inside the messages but this is doubly more work as adding this ability to use the same socket would also require companions to be reworked and this is very much a non issue. So, as stands companions uses different ports for each (non-lisp) agent. There is some other crossover of the port functionality as we send some messages over out listen port (such as ping), but generally:

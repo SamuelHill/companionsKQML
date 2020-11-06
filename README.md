@@ -33,11 +33,11 @@ class CustomPythonianAgent(Pythonian):
         # your setup code here...
 ```
 
-To instantiate the agent when calling this module, there is a convenience function you can use to allow for command line arguments to specify a handful of parameters at runtime. As well as allowing for more flexible agents, the convenience function has a further nicety in that it will attempt to check for a running Companions agent on your system and, if found, can get the port it is hosted at automatically. This extra feature is also available through the `init_check_companions` constructor as we want the `__init__` method to remain simple for now. The command line argument function is called as follows:
+To instantiate the agent when calling this module, there is a convenience function you can use to allow for command line arguments to specify a handful of parameters at runtime. As well as allowing for more flexible agents, the convenience function has a further nicety in that it will attempt to check for a running Companions agent on your system and, if found, can get the port it is hosted at automatically. This extra feature is also available through the `init_check_companions` constructor as we want the `__init__` method to remain simple. The command line argument function is called as follows:
 
 ```python3
 if __name__ == "__main__":
-    agent = CustomPythonianAgent.parse_command_line_args()
+    AGENT = CustomPythonianAgent.parse_command_line_args()
 ```
 
 This function parses the sys.args list and passes the appropriate flagged values along to create a new instance of the class. The flags associated with this function are:
@@ -51,16 +51,16 @@ To utilize the check for companions on its own without expecting command line ar
 
 ```python3
 if __name__ == "__main__":
-    agent = CustomPythonianAgent.init_check_companions()
+    AGENT = CustomPythonianAgent.init_check_companions()
 ```
 
 This function will take the exact same keyword arguments as the the `__init__` function below with the addition of a *verify_port* boolean that defaults to false. The verify_port keyword has the same function as the flag by the same name used in the `parse_command_line_args` function.
 
-Alternatively, you can just create the agent through a normal the `__init__` and use keyword arguments to specify a handful of parameters:
+Alternatively, you can just create the agent through the normal `__init__` and use keyword arguments to specify a handful of parameters:
 
 ```python3
 if __name__ == "__main__":
-    agent = CustomPythonianAgent()
+    AGENT = CustomPythonianAgent()
 ```
 
 The parameters (`kwargs`) are *host* (default = `'localhost'`), *port* (default = `9000`), *listener_port* (default = `8950`), and *debug* (default = `False`). If you are running a Companion on a different machine set *host* to be the ip address (as a string) with the *port* properly set. The *listener_port* is the port that you will be sending messages from so set it according to any firewall or other port blocking that you may have, this shouldn't be a problem for local work (Companions on the same machine). *Debug* sets the logger level so a value of `True` will print all debug and log statements to the console (console logging is the default behavior we use) while a value of `False` will only print the log statements.
@@ -85,21 +85,30 @@ where `my_custom_achieve_function` is some function you have defined. Alternativ
 self.add_achieve(my_custom_achieve_function, 'new_function_name')
 ```
 
-The return value of this function will be sent to Companions via a tell message. The return is sent as a tell to Companions with the content set to the return value passed through the listify function (converts python objects to KQML equivalents). This means that you should be able to pass most objects in (at a minimum the objects passed in need to be able to be turned to strings).
+The number of arguments to pass along when calling this achieve from companions is determined by the number of args in the function you define. As of now functions that have a self argument won't work, and functions that have a default value defined won't have that value respected and that argument contributes to the number of expected arguments. For all other functions, so long as you pass the same number of args the function will be called with those args. To summarize an example in [test/test_agent.py](https://github.com/SamuelHill/companionsKQML/blob/master/test/test_agent.py), we define test_acheive to have one argument:
+
+```python3
+def test_achieve(input: Any):
+    pass
+```
+
+And we call this function with an achieve like `(achieve :receiver YourAgent :content (task :action (test_achieve data)))`. Focus on the `(test_achieve data)`, this is the 'call' to your achieve function. If you added this function with a new name that call would be `(new_function_name data)` instead. If your function had 4 arguments for the inputs then you would call something like `(new_function_name data1 data2 data3 data4)`.
+
+The return value of this function will be sent to Companions via a tell message. The return is sent as a tell to Companions with the content set to the return value passed through the *listify* function (converts python objects to KQML equivalents). This means that you should be able to return most objects from your functions (at a minimum the objects passed in need to be able to be turned to strings).
 
 ### ask-one
 
 If you want to make a query available to Companion via an ask message, then you will need to add a function to the class to perform the processing necessary for the query. To recognize that function as a query, you need to add it to the asks the agent knows about in much the same way that you add and achieve. The major difference in how asks and achieve work then is based on the call and return structure. Achieves achieve a task with some function while asks reply to querys with the requested informationm, this is accomplished by calling the python function and binding the returned results to the query pattern. As such, in addition to the name of the ask (the predicate) and the function to be called, you may want to note how the query pattern should be formed for easy reference. For example, the code below (inside `__init__`) adds a function we have defined to the agents ask predicates which only takes in one input and should only return one element.
 
 ```python3
-# (my_custom_ask_function ?_input ?return)
+# (my_custom_ask_function input_data ?return)
 self.add_ask(my_custom_ask_function)
 ```
 
 Similar to how you can add a custom name for achieves, you can add custom names for asks:
 
 ```python3
-# (new_function_name ?_input ?return)
+# (new_function_name input_data ?return)
 self.add_ask(my_custom_ask_function, 'new_function_name')
 ```
 
@@ -154,11 +163,61 @@ KQML has a syntax similar to lisp and to make utilizing KQML easier pykqml has s
 
 ### listify
 
-Listify takes in any python object and returns the appropriate KQML object from pykqml. Listify readily handles lists, dicts, bools, strings, and tuples, and can handle any other object that has a str representation.
+Listify takes in any python object and returns the appropriate KQML object from pykqml. Listify readily handles lists, dicts, bools, strings, and tuples, and can handle any other object that has a str representation. Some examples of its use:
+
+```python3
+>>> listify(['a', 3, 0.7, 'this'])
+(a 3 0.7 this)
+>>> f'(data {_})'
+'(data (a 3 0.7 this))'
+>>>
+>>> listify('a stiring')
+"a string"
+>>> listify('atom')
+atom
+>>> listify(('atom', 'cell'))
+(atom . cell)
+>>> listify({'atom': 'cell', 'test': 'dict'})
+((atom . cell) (test . dict))
+>>> listify(False)
+nil
+>>> listify([1, [2, [3, 4]]])
+(1 (2 (3 4)))
+```
+
+By passing your data into listify, you will get a KQMLObject in return which can easily be utilized in the formation of performatives. This is already an under the hood feature of achieves, asks, and subscriptions in that your returned objects will be listified for you (for ask and achieve functions) and your subscription data will be handled upon updating (you pass data to be bound to arguments which is then listified). A note, insert data does not listify your data as it expects you to be passing in a fact that fits into a kqml query (a string that has proper parens and is the representation of a fact). However, in any other situation where you are creating a message (see performative) and want to process some data into a more appropriate form then you should use *listify*.
 
 ### performative
 
-Performative allows you to pass in a string with the well formed KQML query instead of creating a performative and setting each value (`msg = KQMLPerformative('achieve')` followed by `msg.set('content', data)`). So long as you remember to add colons before the key (e.g. `:content data`) and close all parens, creating well formed KQML strings isn't too hard. As well, we often are using a base query and filling in the blanks so fstrings fit this task quite well. You can still set new key value pairs on the KQMLPerformative object returned by a call to *performative* to do any modifications to your template.
+*performative* allows you to pass in a string with the well formed KQML query instead of creating a performative and setting each value (`msg = KQMLPerformative('achieve')` followed by `msg.set('content', data)`). So long as you remember to add colons before the key (e.g. `:content data`) and *close all parens*, creating well formed KQML strings isn't too hard. As well, we often are using a base query and filling in the blanks so fstrings fit this task quite well. You can still set new key value pairs on the KQMLPerformative object returned by a call to *performative* to do any modifications to your template. Some examples of it's use:
+
+```python3
+# Inside some function that you want to send a message from
+# (inside a Pythonian agent):
+message = (f'(ask-all :sender {self.name} :receiver session-reasoner '
+           f':query-type ask :reply-with {reply_id} :context {context} '
+           f':content {content})')
+self.send(performative(message))
+
+# Alternatively - constructed using KQMLObject methods:
+message = KQMLPerformative('ask-all')
+message.set('sender', self.name)
+message.set('receiver', 'session-reasoner')
+message.set('query-type', 'ask')
+message.set('reply-with', reply_id)
+message.set('context', context)
+message.set('content', content)
+self.send(message)
+
+# You can also create the message first as a template f-string and then add
+# to it as a KQMLObject
+message = performative(f'(ask-all :sender {self.name} :receiver session-reasoner '
+                       f':query-type ask :reply-with {reply_id} :context {context})')
+message.set('content', content)
+self.send(message)
+```
+
+This should allow you to quickly create a performative to be sent to companions, all that is needed is for you to figure out what query you want to send in the first place.
 
 ### convert_to_boolean
 

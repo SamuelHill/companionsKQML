@@ -6,13 +6,20 @@ Package containing all basic Companions related KQML communication for Python. F
 
 Module replacing [pykqml's KQMLModule](https://github.com/bgyori/pykqml/blob/master/kqml/kqml_module.py). Handles all low level actions relevant to keeping the module alive as a KQML server compatible with Companions (for more on the reasoning for this see archive/README.md). This includes;
 * a threaded socket server listening for messages (on the listener_port),
+    * multiple python agent support (<50) without specifying port, we scan for next if bound
 * modified connect and send;
   * send now opens the send socket, sends the message, and closes the socket for every sent message so Companions knows that the message is over and doesn't time out,
+* miscellaneous lisp processing such as package name removal
 * safe exit function that cleans up everything and closes (great for the REPL and for applications that don't need to stay alive forever),
 * all the basic functions for registering as an agent and keeping up with status update pings,
 * respond to query mechanism that will either pass back binding lists or will bind the results to the query pattern
 
-As well, there are several convenience functions such as `parse_command_line_args` which can create an agent from command line flags, `listify` which takes any object in python and converts it into the correlated pykqml KQML object, `performative` which creates KQML messages from strings to be sent along, and `convert_to_boolean` & `convert_to_int` which take the KQML data you get back and convert them to normal python types.
+As well, there are several convenience functions (see the main [README](https://github.com/SamuelHill/companionsKQML/blob/master/README.md) for basic examples of these functions) such as;
+* `parse_command_line_args` which can create an agent from command line flags,
+    * additionally this can check for a running local companion to try and get the port number from it when you don't specify a port, if this fails we fall back to the default value
+* `listify` which takes any object in python and converts it into the correlated pykqml KQML object,
+* `performative` which creates KQML messages from strings to be sent along,
+* `convert_to_boolean` & `convert_to_int` which take the KQML data you get back and convert them to normal python types.
 
 ## pythonian.py
 

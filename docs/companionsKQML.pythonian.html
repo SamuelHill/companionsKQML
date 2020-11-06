@@ -149,12 +149,12 @@ then&nbsp;joins&nbsp;the&nbsp;polling&nbsp;Thread.<br>
 Args:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;n&nbsp;(int,&nbsp;optional):&nbsp;the&nbsp;value&nbsp;to&nbsp;pass&nbsp;along&nbsp;to&nbsp;sys.exit</tt></dd></dl>
 
-<dl><dt><a name="Pythonian-insert_data"><strong>insert_data</strong></a>(self, receiver:str, data:Any, wm_only:bool=False)</dt><dd><tt>Takes&nbsp;the&nbsp;data&nbsp;input&nbsp;by&nbsp;the&nbsp;user&nbsp;and&nbsp;processes&nbsp;it&nbsp;into&nbsp;an&nbsp;insert<br>
+<dl><dt><a name="Pythonian-insert_data"><strong>insert_data</strong></a>(self, receiver:str, data:str, wm_only:bool=False)</dt><dd><tt>Takes&nbsp;the&nbsp;data&nbsp;input&nbsp;by&nbsp;the&nbsp;user&nbsp;and&nbsp;processes&nbsp;it&nbsp;into&nbsp;an&nbsp;insert<br>
 message&nbsp;which&nbsp;is&nbsp;subsequently&nbsp;sent&nbsp;off&nbsp;to&nbsp;Companions.<br>
 &nbsp;<br>
 Arguments:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;receiver&nbsp;(str):&nbsp;name&nbsp;of&nbsp;the&nbsp;receiver&nbsp;(agent&nbsp;with&nbsp;a&nbsp;kb&nbsp;to&nbsp;insert&nbsp;to)<br>
-&nbsp;&nbsp;&nbsp;&nbsp;data&nbsp;(Any):&nbsp;fact&nbsp;to&nbsp;insert&nbsp;(data&nbsp;to&nbsp;be&nbsp;listify'd)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;data&nbsp;(str):&nbsp;fact&nbsp;to&nbsp;insert<br>
 &nbsp;&nbsp;&nbsp;&nbsp;wm_only&nbsp;(bool,&nbsp;optional):&nbsp;whether&nbsp;or&nbsp;not&nbsp;this&nbsp;should&nbsp;only&nbsp;be<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;inserted&nbsp;into&nbsp;the&nbsp;working&nbsp;memory&nbsp;(default:&nbsp;False)</tt></dd></dl>
 
@@ -163,16 +163,16 @@ Arguments:<br>
 Arguments:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;receiver&nbsp;(str):&nbsp;name&nbsp;of&nbsp;the&nbsp;receiver&nbsp;(agent&nbsp;with&nbsp;a&nbsp;kb&nbsp;to&nbsp;insert&nbsp;to)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;data_list&nbsp;(list):&nbsp;list&nbsp;of&nbsp;facts&nbsp;to&nbsp;insert&nbsp;(list&nbsp;with&nbsp;each&nbsp;elemenet<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;having&nbsp;data&nbsp;to&nbsp;be&nbsp;listify'd)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;being&nbsp;a&nbsp;string&nbsp;of&nbsp;the&nbsp;fact&nbsp;to&nbsp;insert&nbsp;in&nbsp;KQML&nbsp;form)<br>
 &nbsp;&nbsp;&nbsp;&nbsp;mt_name&nbsp;(str):&nbsp;microtheory&nbsp;name<br>
 &nbsp;&nbsp;&nbsp;&nbsp;wm_only&nbsp;(bool,&nbsp;optional):&nbsp;whether&nbsp;or&nbsp;not&nbsp;this&nbsp;should&nbsp;only&nbsp;be<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;inserted&nbsp;into&nbsp;the&nbsp;working&nbsp;memory&nbsp;(default:&nbsp;False)</tt></dd></dl>
 
-<dl><dt><a name="Pythonian-insert_to_microtheory"><strong>insert_to_microtheory</strong></a>(self, receiver:str, data:Any, mt_name:str, wm_only:bool=False)</dt><dd><tt>Inserts&nbsp;a&nbsp;fact&nbsp;into&nbsp;the&nbsp;given&nbsp;microtheory&nbsp;using&nbsp;ist-Information<br>
+<dl><dt><a name="Pythonian-insert_to_microtheory"><strong>insert_to_microtheory</strong></a>(self, receiver:str, data:str, mt_name:str, wm_only:bool=False)</dt><dd><tt>Inserts&nbsp;a&nbsp;fact&nbsp;into&nbsp;the&nbsp;given&nbsp;microtheory&nbsp;using&nbsp;ist-Information<br>
 &nbsp;<br>
 Arguments:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;receiver&nbsp;(str):&nbsp;name&nbsp;of&nbsp;the&nbsp;receiver&nbsp;(agent&nbsp;with&nbsp;a&nbsp;kb&nbsp;to&nbsp;insert&nbsp;to)<br>
-&nbsp;&nbsp;&nbsp;&nbsp;data&nbsp;(Any):&nbsp;fact&nbsp;to&nbsp;insert<br>
+&nbsp;&nbsp;&nbsp;&nbsp;data&nbsp;(str):&nbsp;fact&nbsp;to&nbsp;insert<br>
 &nbsp;&nbsp;&nbsp;&nbsp;mt_name&nbsp;(str):&nbsp;microtheory&nbsp;name<br>
 &nbsp;&nbsp;&nbsp;&nbsp;wm_only&nbsp;(bool,&nbsp;optional):&nbsp;whether&nbsp;or&nbsp;not&nbsp;this&nbsp;should&nbsp;only&nbsp;be<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;inserted&nbsp;into&nbsp;the&nbsp;working&nbsp;memory&nbsp;(default:&nbsp;False)</tt></dd></dl>
@@ -465,6 +465,8 @@ Methods inherited from <a href="kqml.kqml_module.html#KQMLModule">kqml.kqml_modu
 <dl><dt><a name="Pythonian-reply"><strong>reply</strong></a>(self, msg, reply_msg)</dt></dl>
 
 <dl><dt><a name="Pythonian-send_with_continuation"><strong>send_with_continuation</strong></a>(self, msg, cont)</dt></dl>
+
+<dl><dt><a name="Pythonian-stop_waiting"><strong>stop_waiting</strong></a>(self)</dt></dl>
 
 <dl><dt><a name="Pythonian-subscribe_request"><strong>subscribe_request</strong></a>(self, req_type)</dt></dl>
 

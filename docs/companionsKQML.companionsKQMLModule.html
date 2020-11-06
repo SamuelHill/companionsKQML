@@ -343,6 +343,8 @@ Methods inherited from <a href="kqml.kqml_module.html#KQMLModule">kqml.kqml_modu
 
 <dl><dt><a name="CompanionsKQMLModule-send_with_continuation"><strong>send_with_continuation</strong></a>(self, msg, cont)</dt></dl>
 
+<dl><dt><a name="CompanionsKQMLModule-stop_waiting"><strong>stop_waiting</strong></a>(self)</dt></dl>
+
 <dl><dt><a name="CompanionsKQMLModule-subscribe_request"><strong>subscribe_request</strong></a>(self, req_type)</dt></dl>
 
 <dl><dt><a name="CompanionsKQMLModule-subscribe_tell"><strong>subscribe_tell</strong></a>(self, tell_type)</dt></dl>
@@ -626,6 +628,8 @@ Methods inherited from <a href="kqml.kqml_module.html#KQMLModule">kqml.kqml_modu
 
 <dl><dt><a name="ControlledCompanionsKQMLModule-send_with_continuation"><strong>send_with_continuation</strong></a>(self, msg, cont)</dt></dl>
 
+<dl><dt><a name="ControlledCompanionsKQMLModule-stop_waiting"><strong>stop_waiting</strong></a>(self)</dt></dl>
+
 <dl><dt><a name="ControlledCompanionsKQMLModule-subscribe_request"><strong>subscribe_request</strong></a>(self, req_type)</dt></dl>
 
 <dl><dt><a name="ControlledCompanionsKQMLModule-subscribe_tell"><strong>subscribe_tell</strong></a>(self, tell_type)</dt></dl>
@@ -728,7 +732,7 @@ Arguments:<br>
 Returns:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;KQMLType</tt></dd></dl>
  <dl><dt><a name="-performative"><strong>performative</strong></a>(string:str) -&gt; kqml.kqml_performative.KQMLPerformative</dt><dd><tt>Wrapper&nbsp;for&nbsp;KQMLPerformative.from_string,&nbsp;produces&nbsp;a&nbsp;performative&nbsp;object<br>
-from&nbsp;a&nbsp;KQML&nbsp;string<br>
+from&nbsp;a&nbsp;KQML&nbsp;formatted&nbsp;string<br>
 &nbsp;<br>
 Arguments:<br>
 &nbsp;&nbsp;&nbsp;&nbsp;string&nbsp;(str):&nbsp;well&nbsp;formed&nbsp;KQML&nbsp;performative&nbsp;as&nbsp;a&nbsp;string<br>

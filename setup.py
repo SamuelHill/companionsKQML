@@ -7,7 +7,7 @@
 from setuptools import setup
 
 setup(name='companionsKQML',
-      version='1.1.2',
+      version='1.1.3',
       packages=['companionsKQML'],
       python_requires='>=3.0',
       install_requires=['pykqml>=1.3', 'psutil>=5.6.5',

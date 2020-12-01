@@ -7,7 +7,7 @@
 """Package containing a low level Companions specific KQML server module as
 well as the Pythonian module for higher level KQML communication."""
 
-__version__ = '1.1.2'
+__version__ = '1.1.3'
 
 # from logging import basicConfig, INFO
 from .pythonian import Pythonian

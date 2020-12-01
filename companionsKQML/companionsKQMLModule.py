@@ -423,9 +423,15 @@ class CompanionsKQMLModule(KQMLModule):
         else:
             self.error_reply(msg, f'unexpected performative: {msg}')
 
-    # Everything else (reply, error_reply, handle_exceptions,
-    #   send_with_continuation, subscribe_request, subscribe_tell,
-    #   and ALL the remaining receive_* functions) is fine as is
+    def error_reply(self, msg, comment):
+        reply_msg = KQMLPerformative('error')
+        reply_msg.sets('sender', self.name)
+        reply_msg.sets('content', comment)
+        self.reply(msg, reply_msg)
+
+    # Everything else (reply, handle_exceptions, send_with_continuation,
+    #   subscribe_request, subscribe_tell, and ALL the remaining receive_*
+    #    functions) is fine as is...
 
     # HELPERS:
 

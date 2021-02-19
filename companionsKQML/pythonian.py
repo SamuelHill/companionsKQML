@@ -5,7 +5,7 @@
 # @Author:      Samuel Hill
 # @Date:        2020-02-10 16:10:26
 # @Last Modified by:    Samuel Hill
-# @Last Modified time:  2020-11-05 18:41:31
+# @Last Modified time:  2021-02-19 10:40:32
 
 """Pythonian agent, sits on top of the modified KQMLModule -
 CompanionsKQMLModule. Uses subscription management classes to allow for cleaner
@@ -85,6 +85,19 @@ class Pythonian(CompanionsKQMLModule):
         LOGGER.info('received tell: %s', content)
         # TODO: fix timeout reply and remove the tell ok response.
         reply_msg = performative(f'(tell :sender {self.name} :content :ok)')
+        self.reply(msg, reply_msg)
+
+    def receive_untell(self, msg: KQMLPerformative, content: KQMLList):
+        """Override default KQMLModule untell to simply log the content and
+        reply with nothing
+
+        Arguments:
+            msg (KQMLPerformative): overall message to be passed along in reply
+            content (KQMLList): tell content from companions to be logged
+        """
+        LOGGER.info('received untell: %s', content)
+        # TODO: fix same timeout issue as above
+        reply_msg = performative(f'(untell :sender {self.name} :content :ok)')
         self.reply(msg, reply_msg)
 
     ###########################################################################
